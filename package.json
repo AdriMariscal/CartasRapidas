@@ -1,0 +1,24 @@
+{
+  "name": "cartas-rapidas",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "bump:patch": "npm version patch --no-git-tag-version",
+    "bump:minor": "npm version minor --no-git-tag-version",
+    "bump:major": "npm version major --no-git-tag-version"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.17",
+    "astro": "^5.15.5",
+    "jspdf": "^3.0.3",
+    "tailwindcss": "^4.1.17"
+  },
+  "devDependencies": {
+    "@astrojs/preact": "^4.1.3",
+    "preact": "^10.27.2"
+  }
+}
