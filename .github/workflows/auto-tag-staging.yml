@@ -1,0 +1,35 @@
+name: Auto tag RC on version (staging)
+on:
+  push:
+    branches: [staging]
+
+permissions:
+  contents: write
+
+jobs:
+  tag-rc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Read version
+        id: read
+        run: echo "v=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
+      - name: Set Git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Create RC tag
+        env: { V: ${{ steps.read.outputs.v }} }
+        run: |
+          TAG="v${V}-rc"
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG ya existe."
+          else
+            git tag -a "$TAG" -m "Release candidate $TAG"
+            git push origin "$TAG"
+          fi
