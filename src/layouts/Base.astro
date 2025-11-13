@@ -12,7 +12,6 @@ const {
     ogImage = "/assets/og-image.png",
 } = Astro.props;
 ---
-
 <html lang="es">
     <head>
         <meta charset="utf-8" />
@@ -32,4 +31,7 @@ const {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={ogImage} />
     </head>
+    <body>
+        <slot />
+    </body>
 </html>
