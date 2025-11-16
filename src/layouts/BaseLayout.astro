@@ -1,35 +1,34 @@
 ---
-import HeaderDisplayAd from '../components/ads/HeaderDisplayAd.astro';
-import FooterMultiplexAd from '../components/ads/FooterMultiplexAd.astro';
+import NavBar from '../components/NavBar.astro';
+// Importar estilos globales en el layout es un patrón recomendado
+// (Astro los bundlea automáticamente).
+// https://docs.astro.build/en/guides/styling/#global-stylesheets
+import '../styles/global.css';
 
 interface Props {
-  title?: string;
-  description?: string;
+  pageTitle?: string;
+  pageDescription?: string;
 }
 
-const { title = "Cartas Rápidas", description = "Genera cartas legales en segundos" } = Astro.props;
+const {
+  pageTitle = 'Cartas Rápidas – Reclamaciones y Bajas (ES)',
+  pageDescription = 'Genera cartas legales claras y listas para enviar.',
+} = Astro.props;
 ---
 
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <!-- aquí irían también favicon, manifest, etc. -->
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
-    <header>
-      <!-- logo + nav -->
-      <HeaderDisplayAd />
-    </header>
-
+    <NavBar />
     <main>
       <slot />
     </main>
-
-    <footer>
-      <FooterMultiplexAd />
-      <!-- texto legal + enlaces FAQ/Privacidad/Legal/Sitemap -->
-    </footer>
   </body>
 </html>

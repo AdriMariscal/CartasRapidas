@@ -1,10 +1,17 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
 
+const pageTitle = 'Cartas Rápidas – Reclamaciones y Bajas (ES)';
+const pageDescription = 'Genera cartas legales claras y listas para enviar.';
 ---
 
-<head>
-
-</head>
-<body>
-	<p>HELLO WORLD!</p>
-</body>
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+  <!-- De momento, solo un placeholder en el main -->
+  <section style="padding: 2rem 1.5rem;">
+    <h1>HELLO WORLD (contenido provisional)</h1>
+    <p>
+      Si ves esta cabecera arriba con "Cartas Rápidas" y el menú Generador / Guías / FAQ,
+      vamos bien. El resto del contenido lo iremos migrando después.
+    </p>
+  </section>
+</BaseLayout>

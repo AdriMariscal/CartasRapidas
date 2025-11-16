@@ -1,0 +1,33 @@
+---
+/**
+ * Cabecera superior de Cartas Rápidas.
+ * No envía JS al cliente: es HTML estático puro (buena práctica Astro).
+ * https://docs.astro.build/en/basics/astro-components/
+ */
+---
+
+<header class="cr-header">
+  <div class="cr-container cr-header__inner">
+    <a href="/" class="cr-brand">
+      <span class="cr-brand__icon" aria-hidden="true">⚡</span>
+      <span class="cr-brand__text">
+        <span class="cr-brand__title">Cartas Rápidas</span>
+        <span class="cr-brand__subtitle">Genera cartas legales en segundos</span>
+      </span>
+    </a>
+
+    <nav class="cr-nav" aria-label="Navegación principal">
+      <ul class="cr-nav__list">
+        <li class="cr-nav__item">
+          <a href="#generador" class="cr-nav__link cr-nav__link--active">Generador</a>
+        </li>
+        <li class="cr-nav__item">
+          <a href="#guias" class="cr-nav__link">Guías</a>
+        </li>
+        <li class="cr-nav__item">
+          <a href="#faq" class="cr-nav__link">FAQ</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
