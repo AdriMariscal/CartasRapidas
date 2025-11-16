@@ -1,7 +1,13 @@
 ---
-// src/components/ads/HeaderDisplayAd.astro
+// Cabecera de publicidad superior.
+// Solo carga AdSense en producción usando import.meta.env.PROD
+// https://docs.astro.build/es/guides/environment-variables/
 const isProd = import.meta.env.PROD;
 ---
+
+<section class="cr-ad cr-ad--header" aria-label="Publicidad">
+  <div class="cr-ad__inner">
+    <p class="cr-ad__label">PUBLICIDAD</p>
 
 {isProd && (
   <>
@@ -27,3 +33,5 @@ const isProd = import.meta.env.PROD;
     </script>
   </>
 )}
+  </div>
+</section>

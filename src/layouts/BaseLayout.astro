@@ -5,6 +5,10 @@ import NavBar from '../components/NavBar.astro';
 // https://docs.astro.build/en/guides/styling/#global-stylesheets
 import '../styles/global.css';
 
+import HeaderDisplayAd from '../components/HeaderDisplayAd.astro';
+// Si lo tienes en src/components/ads/HeaderDisplayAd.astro,
+// cambia la ruta a '../components/ads/HeaderDisplayAd.astro'
+
 interface Props {
   pageTitle?: string;
   pageDescription?: string;
@@ -27,6 +31,7 @@ const {
   </head>
   <body>
     <NavBar />
+    <HeaderDisplayAd />
     <main>
       <slot />
     </main>

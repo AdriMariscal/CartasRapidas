@@ -129,3 +129,31 @@ body {
     gap: 1rem;
   }
 }
+
+/* BLOQUE DE PUBLICIDAD (HEADER) */
+
+.cr-ad {
+  background-color: #eef2f7; /* gris muy claro tipo original */
+  border-bottom: 1px solid var(--cr-header-border);
+}
+
+.cr-ad--header {
+  /* Altura mínima para que el hueco se vea incluso sin anuncios */
+  min-height: 140px;
+}
+
+.cr-ad__inner {
+  max-width: var(--cr-max-width);
+  margin-inline: auto;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.cr-ad__label {
+  margin: 0 0 0.75rem;
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cr-text-muted);
+}
