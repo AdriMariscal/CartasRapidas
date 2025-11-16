@@ -1,0 +1,433 @@
+---
+import { getCollection } from 'astro:content';
+
+// 1) Cargamos todas las cartas de la colección "cartas"
+const entries = await getCollection('cartas', ({ data }) => data.activo !== false);
+
+// 2) Función para convertir {nombre_completo} -> "Nombre Completo"
+const labelOverrides: Record<string, string> = {
+  codigo_postal: 'Código Postal',
+  dni_nie: 'DNI/NIE',
+};
+
+function humanizePlaceholder(name: string): string {
+  if (labelOverrides[name]) return labelOverrides[name];
+
+  return name
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+// 3) Construimos la estructura de datos que enviaremos al cliente
+type FieldDef = {
+  name: string;
+  label: string;
+};
+
+type CartaDef = {
+  id: string;
+  titulo: string;
+  body: string;
+  fields: FieldDef[];
+  hasFirma: boolean;
+};
+
+const cartas: CartaDef[] = entries.map((entry) => {
+  const body = entry.body;
+
+  // Extraemos todos los {placeholders} únicos
+  const matches = Array.from(body.matchAll(/\{([a-zA-Z0-9_]+)\}/g));
+  const uniqueNames = Array.from(new Set(matches.map((m) => m[1])));
+
+  const hasFirma = uniqueNames.includes('firma');
+
+  const fields: FieldDef[] = uniqueNames
+    .filter((name) => name !== 'firma') // 👈 no creamos campo de texto para {firma}
+    .map((name) => ({
+    name,
+    label: humanizePlaceholder(name),
+  }));
+
+  return {
+    id: entry.id,
+    titulo: entry.data.titulo,
+    body,
+    fields,
+    hasFirma,
+  };
+});
+
+const initialCartaId = cartas[0]?.id ?? '';
+---
+
+{cartas.length === 0 ? (
+  <section class="cr-generator" id="generador">
+    <div class="cr-container">
+      <p>No hay cartas configuradas en la colección <code>cartas</code>.</p>
+    </div>
+  </section>
+) : (
+  <section class="cr-generator" id="generador">
+    <div class="cr-container">
+      <div class="cr-generator__grid" data-cr-generator>
+        <!-- Columna izquierda: formulario -->
+        <div class="cr-generator__form">
+          <div class="cr-field cr-field--select">
+            <label class="cr-field__label">
+              <span>Tipo de carta</span>
+              <select data-cr-template>
+                <!-- Las opciones se rellenan por JS para mantener una sola fuente de verdad -->
+              </select>
+            </label>
+          </div>
+
+          <div class="cr-generator__fields" data-cr-fields>
+            <!-- Aquí JS inyecta los campos según los {placeholders} -->
+          </div>
+
+          <!-- Área especial de firma (solo se muestra si la carta tiene {firma}) -->
+          <div class="cr-signature" data-cr-signature hidden>
+            <span class="cr-signature__label">Firma</span>
+            <canvas
+              class="cr-signature__canvas"
+              width="400"
+              height="160"
+            ></canvas>
+            <div class="cr-signature__actions">
+              <button
+                type="button"
+                class="cr-button cr-button--ghost"
+                data-cr-signature-clear
+              >
+                Limpiar firma
+              </button>
+            </div>
+          </div>
+
+          <div class="cr-generator__actions">
+            <button class="cr-button cr-button--primary" data-cr-generate>
+              Generar
+            </button>
+            <button class="cr-button cr-button--ghost" data-cr-reset>
+              Limpiar
+            </button>
+          </div>
+
+          <p class="cr-generator__hint">
+            Consejo: usa correo certificado o registro electrónico cuando sea posible.
+          </p>
+
+          <div class="cr-generator__warning">
+            <strong>Disclaimer:</strong> Este generador no sustituye asesoramiento legal
+            profesional. Revisa siempre los datos antes de enviar.
+          </div>
+        </div>
+
+        <!-- Columna derecha: previsualización -->
+        <div class="cr-generator__preview">
+          <div class="cr-generator__preview-header">
+            <h2 class="cr-generator__preview-title">Previsualización</h2>
+            <div class="cr-generator__preview-actions">
+              <button class="cr-button cr-button--ghost" data-cr-copy>Copiar</button>
+              <button class="cr-button cr-button--primary" data-cr-pdf>Descargar PDF</button>
+            </div>
+          </div>
+          <pre class="cr-generator__preview-body" data-cr-preview></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- Script de cliente: lógica del generador -->
+    <script define:vars={{ cartas, initialCartaId }}>
+      /** @typedef {{ name: string; label: string }} FieldDef */
+      /** @typedef {{ id: string; titulo: string; body: string; fields: FieldDef[]; hasFirma: boolean }} CartaDef */
+
+      /** @type {CartaDef[]} */
+      const allCartas = cartas;
+      const defaultCartaId = initialCartaId;
+
+      const root = document.querySelector('[data-cr-generator]');
+      if (!root || !allCartas.length) {
+        console.warn('Cartas Rápidas: no se ha encontrado el contenedor del generador.');
+      } else {
+        const select = root.querySelector('select[data-cr-template]');
+        const fieldsContainer = root.querySelector('[data-cr-fields]');
+        const previewEl = root.querySelector('[data-cr-preview]');
+        const generateBtn = root.querySelector('[data-cr-generate]');
+        const resetBtn = root.querySelector('[data-cr-reset]');
+        const copyBtn = root.querySelector('[data-cr-copy]');
+        const pdfBtn = root.querySelector('[data-cr-pdf]');
+
+        const signatureSection = root.querySelector('[data-cr-signature]');
+        const signatureCanvas = signatureSection?.querySelector('canvas');
+        const signatureClearBtn = signatureSection?.querySelector('[data-cr-signature-clear]');
+
+        const cartasById = new Map(allCartas.map((carta) => [carta.id, carta]));
+        /** @type {CartaDef} */
+        let currentCarta = cartasById.get(defaultCartaId) || allCartas[0];
+
+        /** @type {Record<string, string>} */
+        let formState = {};
+
+        // --- Firma (canvas) ---
+        /** @type {CanvasRenderingContext2D | null} */
+        let signatureCtx = null;
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        let signatureDataUrl = '';
+
+        function setupSignaturePad() {
+          if (!signatureCanvas) return;
+          const ctx = signatureCanvas.getContext('2d');
+          if (!ctx) return;
+          signatureCtx = ctx;
+          ctx.lineWidth = 2;
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = '#111827';
+
+          const getPos = (evt) => {
+            const rect = signatureCanvas.getBoundingClientRect();
+            return {
+              x: evt.clientX - rect.left,
+              y: evt.clientY - rect.top,
+            };
+          };
+
+          const start = (evt) => {
+            evt.preventDefault();
+            const pos = getPos(evt);
+            isDrawing = true;
+            lastX = pos.x;
+            lastY = pos.y;
+          };
+
+          const draw = (evt) => {
+            if (!isDrawing || !signatureCtx) return;
+            evt.preventDefault();
+            const pos = getPos(evt);
+            signatureCtx.beginPath();
+            signatureCtx.moveTo(lastX, lastY);
+            signatureCtx.lineTo(pos.x, pos.y);
+            signatureCtx.stroke();
+            lastX = pos.x;
+            lastY = pos.y;
+          };
+
+          const stop = (evt) => {
+            evt?.preventDefault();
+            if (isDrawing && signatureCanvas) {
+              // Guardamos la firma como dataURL para poder mostrarla en la previsualización
+              signatureDataUrl = signatureCanvas.toDataURL('image/png');
+              updatePreview();
+            }
+            isDrawing = false;
+          };
+
+          signatureCanvas.addEventListener('pointerdown', start);
+          signatureCanvas.addEventListener('pointermove', draw);
+          ['pointerup', 'pointerleave', 'pointercancel'].forEach((type) =>
+            signatureCanvas.addEventListener(type, stop)
+          );
+
+          signatureCanvas.style.touchAction = 'none';
+        }
+
+        function clearSignatureCanvas() {
+          if (!signatureCtx || !signatureCanvas) return;
+          signatureCtx.clearRect(0, 0, signatureCanvas.width, signatureCanvas.height);
+          signatureDataUrl = '';
+          updatePreview();
+        }
+
+        function updateSignatureVisibility() {
+          if (!signatureSection) return;
+          if (currentCarta && currentCarta.hasFirma) {
+            signatureSection.hidden = false;
+          } else {
+            signatureSection.hidden = true;
+            clearSignatureCanvas();
+          }
+        }
+
+        // --- Helpers para texto/HTML ---
+
+        function escapeHtml(str) {
+          return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        }
+
+        // Base: carta con placeholders (excepto {firma}) resueltos
+        function buildBaseText() {
+          if (!currentCarta) return '';
+
+          // Si todos los campos están vacíos, no mostramos nada
+          const hasAnyValue = Object.values(formState).some(
+            (v) => v && v.trim() !== ''
+          );
+          if (!hasAnyValue) return '';
+
+          let text = currentCarta.body;
+
+          for (const [name, value] of Object.entries(formState)) {
+            const pattern = new RegExp('\\{' + name + '\\}', 'g');
+            text = text.replace(pattern, value || '{' + name + '}');
+          }
+
+          return text;
+        }
+
+        // Versión texto plano (para copiar / PDF futuro)
+        function buildPreviewText() {
+          let text = buildBaseText();
+          if (!text) return '';
+
+          if (currentCarta.hasFirma) {
+            text = text.replace(/\{firma\}/g, '\n\n\n');
+          }
+
+          return text;
+        }
+
+        // Versión HTML (para la previsualización con imagen)
+        function buildPreviewHtml() {
+          let text = buildBaseText();
+          if (!text) return '';
+
+          const FIRMA_TOKEN = '__CR_FIRMA__TOKEN__';
+          if (currentCarta.hasFirma) {
+            text = text.replace(/\{firma\}/g, FIRMA_TOKEN);
+          }
+
+          // Escapamos todo para que el HTML solo sea el que generamos nosotros
+          text = escapeHtml(text);
+
+          if (currentCarta.hasFirma) {
+            const firmaHtml = signatureDataUrl
+              ? `<div class="cr-preview-signature"><img src="${signatureDataUrl}" alt="Firma" /></div>`
+              : '<br><br><br>';
+
+            text = text.replace(new RegExp(FIRMA_TOKEN, 'g'), firmaHtml);
+          }
+
+          // Convertimos saltos de línea en <br> para mantener el formato tipo carta
+          text = text.replace(/\n/g, '<br />');
+
+          return text;
+        }
+
+        function updatePreview() {
+          if (!previewEl) return;
+          const html = buildPreviewHtml();
+          previewEl.innerHTML = html;
+        }
+
+        // --- Campos y select ---
+
+        function setupSelect() {
+          if (!select) return;
+
+          select.innerHTML = '';
+          allCartas.forEach((carta) => {
+            const option = document.createElement('option');
+            option.value = carta.id;
+            option.textContent = carta.titulo;
+            if (carta.id === currentCarta.id) option.selected = true;
+            select.appendChild(option);
+          });
+
+          select.addEventListener('change', () => {
+            const selected = cartasById.get(select.value);
+            if (!selected) return;
+            currentCarta = selected;
+            renderFields();
+            updateSignatureVisibility();
+            updatePreview();
+          });
+        }
+
+        function renderFields() {
+          if (!fieldsContainer) return;
+          fieldsContainer.innerHTML = '';
+          formState = {};
+
+          currentCarta.fields.forEach((field) => {
+            formState[field.name] = '';
+
+            const fieldWrapper = document.createElement('div');
+            fieldWrapper.className = 'cr-field';
+
+            fieldWrapper.innerHTML = `
+              <label class="cr-field__label">
+                <span>${field.label}</span>
+                <input class="cr-field__input" name="${field.name}" autocomplete="off" />
+              </label>
+            `;
+
+            const input = fieldWrapper.querySelector('input');
+            if (!input) return;
+
+            input.addEventListener('input', () => {
+              formState[field.name] = input.value;
+              updatePreview(); // actualización automática
+            });
+
+            fieldsContainer.appendChild(fieldWrapper);
+          });
+        }
+
+        // --- Acciones ---
+
+        function handleReset() {
+          renderFields();
+          clearSignatureCanvas();
+          updatePreview();
+        }
+
+        function handleGenerate(evt) {
+          evt?.preventDefault();
+          updatePreview();
+        }
+
+        function handleCopy(evt) {
+          evt?.preventDefault();
+          const text = buildPreviewText();
+          if (navigator.clipboard && text) {
+            navigator.clipboard.writeText(text).catch(() => {
+              console.warn('No se pudo copiar al portapapeles.');
+            });
+          }
+        }
+
+        function handlePdf(evt) {
+          evt?.preventDefault();
+          // TODO: Implementar generación de PDF más adelante (incluyendo firma si interesa)
+          alert('La descarga de PDF se implementará en un paso posterior.');
+        }
+
+        // Eventos
+        generateBtn?.addEventListener('click', handleGenerate);
+        resetBtn?.addEventListener('click', (evt) => {
+          evt.preventDefault();
+          handleReset();
+        });
+        copyBtn?.addEventListener('click', handleCopy);
+        pdfBtn?.addEventListener('click', handlePdf);
+        signatureClearBtn?.addEventListener('click', (evt) => {
+          evt.preventDefault();
+          clearSignatureCanvas();
+        });
+
+        // Inicialización
+        setupSignaturePad();
+        setupSelect();
+        renderFields();
+        updateSignatureVisibility();
+        updatePreview();
+      }
+    </script>
+  </section>
+)}

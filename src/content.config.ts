@@ -6,7 +6,7 @@ const cartas = defineCollection({
   // Cargamos todos los .md de src/content/md/cartas
   loader: glob({
     pattern: '**/*.md',
-    base: './src/content/md/cartas',
+    base: './src/content/cartas',
   }),
   // Esquema mínimo de frontmatter para cada carta
   schema: z.object({

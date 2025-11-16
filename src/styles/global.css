@@ -212,3 +212,225 @@ body {
   margin-bottom: 0.75rem;
 }
 
+/* GENERADOR */
+
+.cr-generator {
+  padding-block: 2rem 3rem;
+}
+
+.cr-generator__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+  gap: 1.75rem;
+  align-items: stretch; /* 🔴 antes: flex-start */
+}
+
+.cr-generator__form,
+.cr-generator__preview {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  padding: 1.5rem;
+}
+
+.cr-generator__preview {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Campos */
+
+.cr-field {
+  margin-bottom: 1rem;
+}
+
+.cr-field--select {
+  margin-bottom: 1.25rem;
+}
+
+.cr-field__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  color: var(--cr-text-muted);
+}
+
+.cr-field__label span {
+  font-weight: 500;
+  color: var(--cr-text-main);
+}
+
+.cr-field__input,
+.cr-field--select select {
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.cr-field__input:focus,
+.cr-field--select select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3);
+}
+
+/* Contenedor de campos del formulario en 2 columnas */
+.cr-generator__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 0.75rem;
+}
+
+/* Ajustamos márgenes porque ahora manda el gap de la grid */
+.cr-field {
+  margin-bottom: 0;
+}
+
+
+/* Botones */
+
+.cr-generator__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cr-button {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.cr-button--primary {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.cr-button--primary:hover {
+  background-color: #0ea271;
+}
+
+.cr-button--ghost {
+  background-color: #ffffff;
+  border-color: #d1d5db;
+  color: var(--cr-text-main);
+}
+
+.cr-button--ghost:hover {
+  background-color: #f3f4f6;
+}
+
+/* Info & disclaimer */
+
+.cr-generator__hint {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--cr-text-muted);
+}
+
+.cr-generator__warning {
+  margin-top: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  background-color: #fef3c7;
+  border: 1px solid #facc15;
+  font-size: 0.8rem;
+}
+
+/* Previsualización */
+
+.cr-generator__preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.cr-generator__preview-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cr-generator__preview-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cr-generator__preview-body {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+
+  /* 🔴 Nuevo: que ocupe todo el alto libre de la tarjeta */
+  flex: 1;
+  min-height: 260px;
+  /* opcional pero recomendable si el texto es muy largo */
+  overflow: auto;
+}
+
+/* Firma (canvas) */
+
+.cr-signature {
+  margin-top: 1rem;
+}
+
+.cr-signature__label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--cr-text-main);
+  margin-bottom: 0.35rem;
+}
+
+.cr-signature__canvas {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  touch-action: none; /* importante para pantallas táctiles */
+}
+
+.cr-signature__actions {
+  margin-top: 0.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cr-preview-signature {
+  margin-top: 1.5rem;
+}
+
+.cr-preview-signature img {
+  max-width: 220px;
+  max-height: 80px;
+  display: block;
+}
+
+
+/* Responsive */
+
+@media (max-width: 960px) {
+  .cr-generator__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cr-generator__fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
