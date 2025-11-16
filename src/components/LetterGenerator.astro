@@ -404,8 +404,43 @@ const initialCartaId = cartas[0]?.id ?? '';
 
         function handlePdf(evt) {
           evt?.preventDefault();
-          // TODO: Implementar generación de PDF más adelante (incluyendo firma si interesa)
-          alert('La descarga de PDF se implementará en un paso posterior.');
+
+          // Usamos el texto base con {firma} dentro
+          const baseText = buildBaseText();
+          if (!baseText) {
+            alert('Rellena la carta antes de descargar el PDF.');
+            return;
+          }
+
+          // Por defecto: todo el texto antes, nada después
+          let beforeText = baseText;
+          let afterText = '';
+
+          // Si la carta tiene marcador {firma}, lo usamos para partir el texto
+          if (currentCarta.hasFirma) {
+            const parts = baseText.split(/\{firma\}/g);
+
+            if (parts.length > 1) {
+              beforeText = parts[0] || '';
+              // Si hubiera más de un {firma}, juntamos el resto por si acaso
+              afterText = parts.slice(1).join('\n\n');
+            }
+          }
+
+          if (
+            !window.CartasRapidas ||
+            typeof window.CartasRapidas.generateLetterPdf !== 'function'
+          ) {
+            alert('No se ha podido cargar el generador de PDF. Intenta recargar la página.');
+            return;
+          }
+
+          window.CartasRapidas.generateLetterPdf({
+            beforeText,
+            afterText,
+            signatureDataUrl: currentCarta.hasFirma ? signatureDataUrl : '',
+            title: currentCarta?.titulo || 'carta',
+          });
         }
 
         // Eventos
@@ -429,5 +464,6 @@ const initialCartaId = cartas[0]?.id ?? '';
         updatePreview();
       }
     </script>
+    <script type="module" src="/src/lib/pdf-client.js"></script>
   </section>
 )}
