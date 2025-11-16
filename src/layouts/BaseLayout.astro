@@ -1,0 +1,35 @@
+---
+import HeaderDisplayAd from '../components/ads/HeaderDisplayAd.astro';
+import FooterMultiplexAd from '../components/ads/FooterMultiplexAd.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = "Cartas Rápidas", description = "Genera cartas legales en segundos" } = Astro.props;
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- aquí irían también favicon, manifest, etc. -->
+  </head>
+  <body>
+    <header>
+      <!-- logo + nav -->
+      <HeaderDisplayAd />
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>
+      <FooterMultiplexAd />
+      <!-- texto legal + enlaces FAQ/Privacidad/Legal/Sitemap -->
+    </footer>
+  </body>
+</html>

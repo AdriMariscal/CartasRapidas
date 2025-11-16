@@ -1,0 +1,29 @@
+---
+// src/components/ads/HeaderDisplayAd.astro
+const isProd = import.meta.env.PROD;
+---
+
+{isProd && (
+  <>
+    <script
+      is:inline
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8169980958051856"
+      crossorigin="anonymous"
+    ></script>
+
+    {/* HeaderDisplay */}
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-8169980958051856"
+      data-ad-slot="6335861215"
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
+
+    <script is:inline>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </>
+)}
