@@ -6,12 +6,39 @@ const pageDescription = 'Genera cartas legales claras y listas para enviar.';
 ---
 
 <BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
-  <!-- De momento, solo un placeholder en el main -->
-  <section style="padding: 2rem 1.5rem;">
-    <h1>HELLO WORLD (contenido provisional)</h1>
-    <p>
-      Si ves esta cabecera arriba con "Cartas Rápidas" y el menú Generador / Guías / FAQ,
-      vamos bien. El resto del contenido lo iremos migrando después.
-    </p>
+  <section class="cr-hero" aria-labelledby="cr-hero-title">
+    <div class="cr-container">
+      <h1 id="cr-hero-title">Genera cartas legales claras y listas para enviar</h1>
+
+      <p>
+        <strong>Cartas Rápidas</strong> es una herramienta gratuita para crear cartas legales
+        frecuentes en España (baja de gimnasio, derecho de desistimiento, reclamaciones
+        a operadoras, devolución de cargos SEPA y solicitud de exclusión de ASNEF). Todo 
+        ocurre en tu navegador: los datos no se envían a ningún servidor y puedes copiar el 
+        texto o descargar un PDF listo para imprimir o adjuntar por registro electrónico.
+      </p>
+
+      <p>
+        El objetivo es ahorrarte tiempo y errores. Cada plantilla incorpora placeholders
+        para tus datos y viene acompañada de una guía práctica con contexto legal,
+        pasos y preguntas frecuentes. Así sabrás cuándo procede tu solicitud, 
+        qué plazos rigen y cómo dejar constancia fehaciente del envío (correo certificado 
+        o medios electrónicos).
+      </p>
+
+      <p>
+        <strong>Cómo usarlo:</strong> 1) Elige la plantilla en el selector del generador. 2) Rellena tus datos
+        (nombre, DNI/NIE, dirección, nº de cliente o referencia, etc.). 3) Pulsa
+        <em>Generar</em> para ver la previsualización y, si estás conforme, <em>Copiar</em> o
+        <em>Descargar PDF</em>. Puedes adaptar el texto a tu caso antes de enviarlo.
+      </p>
+
+      <p>
+        <strong>Límites y responsabilidad:</strong> las cartas y guías son orientativas y se basan en
+        normativa pública. No sustituyen el asesoramiento de un profesional. Revisa siempre tu contrato y 
+        conserva justificantes de envío. Si tu situación es compleja (p. ej., procedimientos judiciales o importes 
+        elevados), consulta con un experto.
+      </p>
+    </div>
   </section>
 </BaseLayout>
