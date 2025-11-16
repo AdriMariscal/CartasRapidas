@@ -157,3 +157,58 @@ body {
   text-transform: uppercase;
   color: var(--cr-text-muted);
 }
+
+/* HERO DE PORTADA */
+
+.cr-hero {
+  padding-block: 3rem 2.5rem;
+  background-color: #f9fafb;
+}
+
+/* Nuevo: limitamos ligeramente el ancho de lectura */
+.cr-hero__content {
+  max-width: 72ch; /* ~72 caracteres por línea, mucho más legible */
+}
+
+.cr-hero h1 {
+  margin: 0 0 1.75rem;
+  font-size: clamp(1.9rem, 1.7rem + 0.5vw, 2.4rem);
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.cr-hero p {
+  margin: 0 0 1rem;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.cr-hero p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Subtítulos del hero ("Cómo usarlo", "Límites y responsabilidad") */
+
+.cr-hero__subtitle {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Lista de pasos */
+
+.cr-hero__steps {
+  margin: 0 0 1.5rem 1.25rem; /* pequeño sangrado a la izquierda */
+  padding: 0;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.cr-hero__steps li {
+  margin-bottom: 0.35rem;
+}
+
+.cr-hero__steps li:last-child {
+  margin-bottom: 0.75rem;
+}
+
