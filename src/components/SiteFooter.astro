@@ -1,0 +1,21 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="cr-footer">
+  <div class="cr-container cr-footer__inner">
+    <p class="cr-footer__copy">
+      © {currentYear} <span class="cr-footer__brand">Cartas Rápidas</span>. MIT License.
+    </p>
+
+    <nav class="cr-footer__nav" aria-label="Enlaces legales">
+      <a href="/legal/terminos" class="cr-footer__link">Aviso legal</a>
+      <span aria-hidden="true" class="cr-footer__separator">•</span>
+
+      <a href="/legal/privacidad" class="cr-footer__link">Política de privacidad</a>
+      <span aria-hidden="true" class="cr-footer__separator">•</span>
+
+      <a href="/sitemap.xml" class="cr-footer__link">Sitemap</a>
+    </nav>
+  </div>
+</footer>

@@ -4,6 +4,7 @@ import '../styles/global.css';
 
 import HeaderDisplayAd from '../components/ads/HeaderDisplayAd.astro';
 import FooterMultiplexAd from '../components/ads/FooterMultiplexAd.astro';
+import SiteFooter from '../components/SiteFooter.astro';
 
 interface Props {
   pageTitle?: string;
@@ -28,9 +29,12 @@ const {
   <body>
     <NavBar />
     <HeaderDisplayAd />
+
     <main>
       <slot />
     </main>
+
     <FooterMultiplexAd />
+    <SiteFooter />
   </body>
 </html>
