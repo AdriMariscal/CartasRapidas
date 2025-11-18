@@ -3,6 +3,10 @@
 const isProd = import.meta.env.PROD;
 ---
 
+<section class="cr-ad cr-ad--footer" aria-label="Publicidad">
+  <div class="cr-ad__inner">
+    <p class="cr-ad__label">PUBLICIDAD</p>
+
 {isProd && (
   <>
     <script
@@ -26,3 +30,5 @@ const isProd = import.meta.env.PROD;
     </script>
   </>
 )}
+  </div>
+</section>

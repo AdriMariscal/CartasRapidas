@@ -130,16 +130,21 @@ body {
   }
 }
 
-/* BLOQUE DE PUBLICIDAD (HEADER) */
+/* BLOQUE DE PUBLICIDAD (HEADER / FOOTER) */
 
 .cr-ad {
   background-color: #eef2f7; /* gris muy claro tipo original */
-  border-bottom: 1px solid var(--cr-header-border);
 }
 
 .cr-ad--header {
-  /* Altura mínima para que el hueco se vea incluso sin anuncios */
   min-height: 140px;
+  border-bottom: 1px solid var(--cr-header-border);
+}
+
+.cr-ad--footer {
+  min-height: 160px;
+  border-top: 1px solid var(--cr-header-border);
+  margin-top: 2rem;
 }
 
 .cr-ad__inner {
@@ -157,6 +162,7 @@ body {
   text-transform: uppercase;
   color: var(--cr-text-muted);
 }
+
 
 /* HERO DE PORTADA */
 

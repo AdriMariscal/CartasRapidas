@@ -1,13 +1,9 @@
 ---
 import NavBar from '../components/NavBar.astro';
-// Importar estilos globales en el layout es un patrón recomendado
-// (Astro los bundlea automáticamente).
-// https://docs.astro.build/en/guides/styling/#global-stylesheets
 import '../styles/global.css';
 
 import HeaderDisplayAd from '../components/ads/HeaderDisplayAd.astro';
-// Si lo tienes en src/components/ads/HeaderDisplayAd.astro,
-// cambia la ruta a '../components/ads/HeaderDisplayAd.astro'
+import FooterMultiplexAd from '../components/ads/FooterMultiplexAd.astro';
 
 interface Props {
   pageTitle?: string;
@@ -35,5 +31,6 @@ const {
     <main>
       <slot />
     </main>
+    <FooterMultiplexAd />
   </body>
 </html>
