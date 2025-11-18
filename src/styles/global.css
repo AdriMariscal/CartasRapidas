@@ -433,4 +433,69 @@ body {
   }
 }
 
+/* GUÍAS Y PLANTILLAS */
+
+.cr-guides {
+  padding-block: 0 3rem; /* pegado al generador, con aire antes del footer */
+}
+
+.cr-guides__header {
+  margin-bottom: 1.5rem;
+}
+
+.cr-guides__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.cr-guides__subtitle {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--cr-text-muted);
+}
+
+/* Grid de tarjetas */
+
+.cr-guides__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.cr-guide-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  padding: 1.25rem 1.35rem;
+}
+
+.cr-guide-card__title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cr-guide-card__description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--cr-text-muted);
+}
+
+/* Responsivo: 2 columnas y luego 1 */
+
+@media (max-width: 960px) {
+  .cr-guides__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .cr-guides__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+
 

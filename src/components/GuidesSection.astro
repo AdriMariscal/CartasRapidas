@@ -1,0 +1,44 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+type CartaEntry = CollectionEntry<'cartas'>;
+
+// Cargamos todas las cartas activas y las ordenamos
+const cartas: CartaEntry[] = await getCollection(
+  'cartas',
+  ({ data }) => data.activo !== false
+);
+
+cartas.sort((a, b) => {
+  const oa = a.data.orden ?? 999;
+  const ob = b.data.orden ?? 999;
+  if (oa !== ob) return oa - ob;
+  return a.data.titulo.localeCompare(b.data.titulo, 'es');
+});
+---
+
+<section class="cr-guides" aria-labelledby="cr-guides-title">
+  <div class="cr-container">
+    <header class="cr-guides__header">
+      <h2 id="cr-guides-title" class="cr-guides__title">
+        Guías y plantillas paso a paso
+      </h2>
+      <p class="cr-guides__subtitle">
+        Elige el modelo que encaja con tu caso y revisa la descripción para saber cuándo utilizarlo.
+      </p>
+    </header>
+
+    <div class="cr-guides__grid">
+      {cartas.map((entry) => (
+        <article class="cr-guide-card">
+          <h3 class="cr-guide-card__title">{entry.data.titulo}</h3>
+          {entry.data.descripcion && (
+            <p class="cr-guide-card__description">
+              {entry.data.descripcion}
+            </p>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
