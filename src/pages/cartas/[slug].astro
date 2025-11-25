@@ -1,0 +1,262 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LetterGenerator from "../../components/LetterGenerator.astro";
+import GuidesSection from "../../components/GuidesSection.astro";
+
+/**
+ * Generamos las rutas estáticas a partir de la colección `cartas`
+ * - Filtramos solo las cartas activas
+ * - Usamos la MISMA lógica de slug que en GuidesSection.astro,
+ *   pero inlinada aquí para evitar problemas de referencia.
+ */
+type CartaEntry = CollectionEntry<"cartas">;
+
+type QueRevisarItem = {
+  titulo: string;
+  descripcion: string;
+};
+
+type FaqItem = {
+  pregunta: string;
+  respuesta: string;
+};
+
+export async function getStaticPaths() {
+  const cartas = await getCollection(
+    "cartas",
+    (entry) => entry.data.activo !== false
+  );
+
+  return cartas.map((entry) => {
+    const data: any = entry.data;
+
+    let slug: string;
+
+    // 1) Si algún día añades `slug` al schema, se usará aquí
+    if (data.slug) {
+      slug = String(data.slug);
+    } else if (data.clave) {
+      // 2) Si no hay `slug`, usamos `clave` cambiando _ por -
+      slug = String(data.clave).replace(/_/g, "-");
+    } else {
+      // 3) Fallback al nombre de fichero
+      const id = (entry as any).id ?? "";
+      slug = id.replace(/\.md$/, "").split("/").pop() ?? id;
+    }
+
+    return {
+      params: { slug }, // /cartas/<slug>
+      props: {
+        cartaSlug: slug,
+        carta: entry,
+      },
+    };
+  });
+}
+
+interface PageProps {
+  cartaSlug: string;
+  carta: CartaEntry;
+}
+
+const { cartaSlug, carta } = Astro.props as PageProps;
+const { data } = carta;
+
+// Título y descripción para la etiqueta <title> y <meta>
+const pageTitle = `${data.titulo} - Guía completa y modelo`;
+const pageDescription = data.descripcion as string | undefined;
+
+// Campos básicos del frontmatter
+const intro = data.intro as string | undefined;
+const puntosClave = data.puntos_clave as string[] | undefined;
+const pasos = data.pasos as string[] | undefined;
+
+// --- Normalización "Qué revisar" ---
+// Soporta tanto:
+// - Objeto { clave: "texto" }
+// - Array de { titulo, descripcion }
+const rawQueRevisar = (data as any).que_revisar;
+
+function humanizeQueRevisarKey(key: string): string {
+  const overrides: Record<string, string> = {
+    permanencia: "Permanencia y penalización",
+    preaviso_canal: "Preaviso y canal",
+    numero_abonado: "Número de abonado",
+    modificaciones: "Modificaciones del servicio",
+  };
+
+  if (overrides[key]) return overrides[key];
+
+  return key
+    .split("_")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+let queRevisar: QueRevisarItem[] = [];
+
+if (Array.isArray(rawQueRevisar)) {
+  queRevisar = rawQueRevisar
+    .map((item: any) => {
+      if (!item) return null;
+      if (typeof item === "string") {
+        return { titulo: item, descripcion: "" };
+      }
+      if (typeof item === "object") {
+        return {
+          titulo: String(item.titulo ?? ""),
+          descripcion: String(item.descripcion ?? ""),
+        };
+      }
+      return null;
+    })
+    .filter(Boolean) as QueRevisarItem[];
+} else if (rawQueRevisar && typeof rawQueRevisar === "object") {
+  queRevisar = Object.entries(rawQueRevisar).map(([key, value]) => ({
+    titulo: humanizeQueRevisarKey(key),
+    descripcion: String(value),
+  }));
+}
+
+// --- Normalización "Consejos de envío" ---
+// Soporta string o string[]
+const rawConsejos = (data as any).consejos_envio;
+let consejosEnvio: string[] = [];
+
+if (Array.isArray(rawConsejos)) {
+  consejosEnvio = rawConsejos.map((c) => String(c));
+} else if (typeof rawConsejos === "string") {
+  consejosEnvio = [rawConsejos];
+}
+
+// --- Normalización FAQ ---
+// Soporta "faq" o "faqs" en el frontmatter
+const rawFaqs = (data as any).faq ?? (data as any).faqs;
+let faqs: FaqItem[] = [];
+
+if (Array.isArray(rawFaqs)) {
+  faqs = rawFaqs.map((item: any) => ({
+    pregunta: String(item?.pregunta ?? ""),
+    respuesta: String(item?.respuesta ?? ""),
+  }));
+}
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+  <main class="cr-main">
+    <article class="cr-guide-page">
+      {/* Bloque de contenido principal (columna más estrecha, como el hero) */}
+      <div class="cr-guide-content">
+        {/* Cabecera / título */}
+        <header class="cr-guide-header">
+          <h1 class="cr-guide-title">
+            {data.titulo} - Guía completa y modelo
+          </h1>
+
+          {intro && (
+            <p class="cr-guide-intro">
+              {intro}
+            </p>
+          )}
+
+          <p class="cr-guide-disclaimer">
+            Esta información es orientativa y no sustituye asesoramiento profesional.
+          </p>
+        </header>
+
+        {/* Puntos clave */}
+        {puntosClave && puntosClave.length > 0 && (
+          <section class="cr-section">
+            <h2 class="cr-section-title">Puntos clave</h2>
+            <ul class="cr-pill-list">
+              {puntosClave.map((punto) => (
+                <li>{punto}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Qué revisar (cajitas) */}
+        {queRevisar.length > 0 && (
+          <section class="cr-section">
+            <h2 class="cr-section-title">
+              Qué revisar antes de enviar tu carta
+            </h2>
+
+            <div class="cr-card-grid">
+              {queRevisar.map((item) => (
+                <article class="cr-card">
+                  <h3>{item.titulo}</h3>
+                  <p>{item.descripcion}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Pasos */}
+        {pasos && pasos.length > 0 && (
+          <section class="cr-section">
+            <h2 class="cr-section-title">Pasos para usar este modelo</h2>
+            <ol class="cr-steps">
+              {pasos.map((paso) => (
+                <li>{paso}</li>
+              ))}
+            </ol>
+          </section>
+        )}
+      </div>
+
+      {/* Generador: conserva su propio ancho (igual que en el index) */}
+      <section class="cr-section" id="generador">
+        <h2 class="cr-section-title">Genera tu carta personalizada</h2>
+        <p class="cr-section-lead">
+          Rellena el formulario y descarga tu carta lista para enviar.
+        </p>
+
+        <LetterGenerator slug={cartaSlug} showSelector={false} />
+      </section>
+
+      {/* Consejos de envío + FAQ también en la columna estrecha */}
+      <div class="cr-guide-content">
+        {/* Consejos de envío */}
+        {consejosEnvio.length > 0 && (
+          <section class="cr-section">
+            <h2 class="cr-section-title">Consejos para el envío</h2>
+            <div class="cr-card">
+              <ul>
+                {consejosEnvio.map((consejo) => (
+                  <li>{consejo}</li>
+                ))}
+              </ul>
+            </div>
+          </section>
+        )}
+
+        {/* FAQ (acordeones) */}
+        {faqs.length > 0 && (
+          <section class="cr-section cr-faq-section">
+            <h2 class="cr-section-title">Preguntas frecuentes</h2>
+
+            <div class="cr-faq-list">
+              {faqs.map((faq, index) => (
+                <details class="cr-faq-item" open={index === 0}>
+                  <summary>{faq.pregunta}</summary>
+                  <p>{faq.respuesta}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+
+      {/* Otras guías a ancho completo, como en el índice */}
+      <section class="cr-section">
+        <GuidesSection />
+      </section>
+    </article>
+  </main>
+</BaseLayout>

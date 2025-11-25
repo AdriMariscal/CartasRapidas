@@ -3,42 +3,45 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 type CartaEntry = CollectionEntry<'cartas'>;
 
-// Cargamos todas las cartas activas y las ordenamos
-const cartas: CartaEntry[] = await getCollection(
-  'cartas',
-  ({ data }) => data.activo !== false
-);
+// Pequeña función de ayuda para obtener un slug estable
+function getCartaSlug(entry: CartaEntry): string {
+  const data: any = entry.data;
 
-cartas.sort((a, b) => {
-  const oa = a.data.orden ?? 999;
-  const ob = b.data.orden ?? 999;
-  if (oa !== ob) return oa - ob;
-  return a.data.titulo.localeCompare(b.data.titulo, 'es');
-});
+  if (data.slug) {
+    return String(data.slug);
+  }
+
+  if (data.clave) {
+    return String(data.clave).replace(/_/g, '-');
+  }
+
+  const id = (entry as any).id ?? '';
+  return id.replace(/\.md$/, '').split('/').pop() ?? id;
+}
+
+// Cargamos todas las cartas activas
+const cartas = await getCollection('cartas', (entry) => entry.data.activo !== false);
 ---
 
-<section class="cr-guides" aria-labelledby="cr-guides-title">
-  <div class="cr-container">
-    <header class="cr-guides__header">
-      <h2 id="cr-guides-title" class="cr-guides__title">
-        Guías y plantillas paso a paso
-      </h2>
-      <p class="cr-guides__subtitle">
-        Elige el modelo que encaja con tu caso y revisa la descripción para saber cuándo utilizarlo.
+<section class="cr-container" id="guias">
+  <h2>Guías y plantillas paso a paso</h2>
+  <p>
+    Elige el modelo que encaja con tu caso y revisa la descripción para saber cuándo utilizarla.
       </p>
-    </header>
 
-    <div class="cr-guides__grid">
-      {cartas.map((entry) => (
-        <article class="cr-guide-card">
-          <h3 class="cr-guide-card__title">{entry.data.titulo}</h3>
-          {entry.data.descripcion && (
-            <p class="cr-guide-card__description">
-              {entry.data.descripcion}
-            </p>
-          )}
-        </article>
-      ))}
+  <div class="cr-guides__grid">
+    {cartas.map((entry: CartaEntry) => {
+      const slug = getCartaSlug(entry);
+
+      return (
+        <a
+          href={`/cartas/${slug}`}
+        class="cr-guide-card"
+        >
+        <h3 class="cr-guide-card__title">{entry.data.titulo}</h3>
+        <p class="cr-guide-card__description">{entry.data.descripcion}</p>
+        </a>
+      );
+    })}
     </div>
-  </div>
 </section>

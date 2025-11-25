@@ -1,6 +1,14 @@
 ---
 import { getCollection } from 'astro:content';
 
+// Props para poder reutilizar el componente
+interface Props {
+  showSelector?: boolean; // por defecto true (index.astro)
+  slug?: string;          // p.ej. "baja-gimnasio" en la página de slug
+}
+
+const { showSelector = true, slug } = Astro.props as Props;
+
 // 1) Cargamos todas las cartas de la colección "cartas"
 const entries = await getCollection('cartas', ({ data }) => data.activo !== false);
 
@@ -58,35 +66,55 @@ const cartas: CartaDef[] = entries.map((entry) => {
   };
 });
 
-const initialCartaId = cartas[0]?.id ?? '';
+// Carta inicial
+let initialCartaId = cartas[0]?.id ?? '';
+
+// Si nos pasan un slug (p.ej. en la página /cartas/[slug]), lo usamos
+if (slug) {
+  const matchingEntry = entries.find(
+    (entry) =>
+      entry.data.slug === slug ||
+      entry.data.clave === slug ||
+      entry.slug === slug
+  );
+  if (matchingEntry) {
+    initialCartaId = matchingEntry.id;
+  }
+}
+
+// ¿Mostramos el selector de tipo de carta?
+const showSelect = showSelector && cartas.length > 1;
 ---
 
 {cartas.length === 0 ? (
   <section class="cr-generator" id="generador">
     <div class="cr-container">
-      <p>No hay cartas configuradas en la colección <code>cartas</code>.</p>
+      <p>
+        No hay cartas configuradas en la colección <code>cartas</code>.
+      </p>
     </div>
   </section>
 ) : (
   <section class="cr-generator" id="generador">
     <div class="cr-container">
       <div class="cr-generator__grid" data-cr-generator>
-        <!-- Columna izquierda: formulario -->
-        <div class="cr-generator__form">
+        {/* Columna izquierda: formulario */}
+        <div class={`cr-generator__form ${showSelect ? '' : 'cr-generator__form--no-select'}`}>
+          {/* Selector de tipo de carta (se puede ocultar por CSS cuando showSelect = false) */}
           <div class="cr-field cr-field--select">
             <label class="cr-field__label">
               <span>Tipo de carta</span>
               <select data-cr-template>
-                <!-- Las opciones se rellenan por JS para mantener una sola fuente de verdad -->
+                {/* Las opciones se rellenan por JS para mantener una sola fuente de verdad */}
               </select>
             </label>
           </div>
 
           <div class="cr-generator__fields" data-cr-fields>
-            <!-- Aquí JS inyecta los campos según los {placeholders} -->
+            {/* Aquí JS inyecta los campos según los {placeholders} */}
           </div>
 
-          <!-- Área especial de firma (solo se muestra si la carta tiene {firma}) -->
+          {/* Área especial de firma (solo se muestra si la carta tiene {firma}) */}
           <div class="cr-signature" data-cr-signature hidden>
             <span class="cr-signature__label">Firma</span>
             <canvas
@@ -124,13 +152,17 @@ const initialCartaId = cartas[0]?.id ?? '';
           </div>
         </div>
 
-        <!-- Columna derecha: previsualización -->
+        {/* Columna derecha: previsualización */}
         <div class="cr-generator__preview">
           <div class="cr-generator__preview-header">
             <h2 class="cr-generator__preview-title">Previsualización</h2>
             <div class="cr-generator__preview-actions">
-              <button class="cr-button cr-button--ghost" data-cr-copy>Copiar</button>
-              <button class="cr-button cr-button--primary" data-cr-pdf>Descargar PDF</button>
+              <button class="cr-button cr-button--ghost" data-cr-copy>
+                Copiar
+              </button>
+              <button class="cr-button cr-button--primary" data-cr-pdf>
+                Descargar PDF
+              </button>
             </div>
           </div>
           <pre class="cr-generator__preview-body" data-cr-preview></pre>
@@ -138,14 +170,15 @@ const initialCartaId = cartas[0]?.id ?? '';
       </div>
     </div>
 
-    <!-- Script de cliente: lógica del generador -->
-    <script define:vars={{ cartas, initialCartaId }}>
+    {/* Script de cliente: lógica del generador */}
+    <script define:vars={{ cartas, initialCartaId, showSelect }}>
       /** @typedef {{ name: string; label: string }} FieldDef */
       /** @typedef {{ id: string; titulo: string; body: string; fields: FieldDef[]; hasFirma: boolean }} CartaDef */
 
       /** @type {CartaDef[]} */
       const allCartas = cartas;
       const defaultCartaId = initialCartaId;
+      const enableSelect = showSelect;
 
       const root = document.querySelector('[data-cr-generator]');
       if (!root || !allCartas.length) {
@@ -251,13 +284,17 @@ const initialCartaId = cartas[0]?.id ?? '';
           }
         }
 
-        // --- Helpers para texto/HTML ---
+        // --- Helpers para texto / Markdown / HTML ---
 
-        function escapeHtml(str) {
-          return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+        // Pequeño formateador Markdown (negrita y cursiva básicas)
+        function applyMarkdownFormatting(text) {
+          if (!text) return '';
+          // Negrita: **texto**
+          text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          // Cursiva: _texto_ o *texto*
+          text = text.replace(/_(.+?)_/g, '<em>$1</em>');
+          text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+          return text;
         }
 
         // Base: carta con placeholders (excepto {firma}) resueltos
@@ -280,10 +317,15 @@ const initialCartaId = cartas[0]?.id ?? '';
           return text;
         }
 
-        // Versión texto plano (para copiar / PDF futuro)
+        // Versión texto plano (para copiar / PDF)
         function buildPreviewText() {
           let text = buildBaseText();
           if (!text) return '';
+
+          // Para texto plano, eliminamos marcadores Markdown
+          text = text.replace(/\*\*(.+?)\*\*/g, '$1');
+          text = text.replace(/_(.+?)_/g, '$1');
+          text = text.replace(/\*(.+?)\*/g, '$1');
 
           if (currentCarta.hasFirma) {
             text = text.replace(/\{firma\}/g, '\n\n\n');
@@ -297,23 +339,27 @@ const initialCartaId = cartas[0]?.id ?? '';
           let text = buildBaseText();
           if (!text) return '';
 
-          const FIRMA_TOKEN = '__CR_FIRMA__TOKEN__';
+          // Token que no contiene ni * ni _ para que el parser de Markdown NO lo toque
+          const FIRMA_TOKEN = 'CRFIRMATOKENPLACEHOLDER';
+
           if (currentCarta.hasFirma) {
+            // Sustituimos {firma} por el token temporal
             text = text.replace(/\{firma\}/g, FIRMA_TOKEN);
           }
 
-          // Escapamos todo para que el HTML solo sea el que generamos nosotros
-          text = escapeHtml(text);
+          // Aplicamos Markdown básico
+          text = applyMarkdownFormatting(text);
 
           if (currentCarta.hasFirma) {
             const firmaHtml = signatureDataUrl
               ? `<div class="cr-preview-signature"><img src="${signatureDataUrl}" alt="Firma" /></div>`
               : '<br><br><br>';
 
-            text = text.replace(new RegExp(FIRMA_TOKEN, 'g'), firmaHtml);
+            // Reemplazamos TODAS las apariciones del token por la firma (o por espacio en blanco)
+            text = text.split(FIRMA_TOKEN).join(firmaHtml);
           }
 
-          // Convertimos saltos de línea en <br> para mantener el formato tipo carta
+          // Saltos de línea -> <br>
           text = text.replace(/\n/g, '<br />');
 
           return text;
@@ -329,6 +375,10 @@ const initialCartaId = cartas[0]?.id ?? '';
 
         function setupSelect() {
           if (!select) return;
+          if (!enableSelect) {
+            // No rellenamos nada: el selector puede ocultarse por CSS
+            return;
+          }
 
           select.innerHTML = '';
           allCartas.forEach((carta) => {
@@ -406,11 +456,17 @@ const initialCartaId = cartas[0]?.id ?? '';
           evt?.preventDefault();
 
           // Usamos el texto base con {firma} dentro
-          const baseText = buildBaseText();
+          let baseText = buildBaseText();
           if (!baseText) {
             alert('Rellena la carta antes de descargar el PDF.');
             return;
           }
+
+          // Quitamos los marcadores Markdown para el PDF
+          baseText = baseText
+            .replace(/\*\*(.+?)\*\*/g, '$1')
+            .replace(/_(.+?)_/g, '$1')
+            .replace(/\*(.+?)\*/g, '$1');
 
           // Por defecto: todo el texto antes, nada después
           let beforeText = baseText;
@@ -464,6 +520,7 @@ const initialCartaId = cartas[0]?.id ?? '';
         updatePreview();
       }
     </script>
+
     <script type="module" src="/src/lib/pdf-client.js"></script>
   </section>
 )}
