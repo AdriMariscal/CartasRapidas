@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pageTitle = 'Contacto – Cartas Rápidas';
+const pageDescription =
+  'Envíanos sugerencias, informa de errores o propón nuevos modelos de carta para Cartas Rápidas mediante este formulario de contacto.';
+const lastUpdated = 'noviembre de 2025';
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+  <div class="cr-main">
+    <article class="cr-guide-page">
+      <div class="cr-guide-content">
+        <header class="cr-guide-header">
+          <h1 class="cr-guide-title">Contacto</h1>
+          <p class="cr-guide-disclaimer">
+            Última actualización: {lastUpdated}. Utiliza este formulario para enviar sugerencias,
+            informar de errores o proponer nuevas cartas para Cartas Rápidas.
+          </p>
+        </header>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">Envíanos tus sugerencias o comentarios</h2>
+          <p class="cr-section-lead">
+            El formulario utiliza la funcionalidad de formularios de Netlify para que puedas
+            enviar mensajes sin necesidad de registrarte. Simplemente rellena tus datos y tu
+            mensaje, y lo recibiremos por correo.
+          </p>
+
+          <div class="cr-generator__form">
+            <form
+              name="contacto"
+              method="POST"
+              data-netlify="true"
+              netlify-honeypot="bot-field"
+            >
+              <input type="hidden" name="form-name" value="contacto" />
+
+              <!-- Honeypot oculto para bots -->
+              <p style="display:none;">
+                <label>
+                  No rellenes este campo:
+                  <input name="bot-field" />
+                </label>
+              </p>
+
+              <div class="cr-generator__fields">
+                <div class="cr-field">
+                  <label class="cr-field__label">
+                    <span>Nombre (opcional)</span>
+                    <input
+                      class="cr-field__input"
+                      type="text"
+                      name="nombre"
+                      autocomplete="name"
+                    />
+                  </label>
+                </div>
+
+                <div class="cr-field">
+                  <label class="cr-field__label">
+                    <span>Correo electrónico</span>
+                    <input
+                      class="cr-field__input"
+                      type="email"
+                      name="email"
+                      autocomplete="email"
+                      required
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div class="cr-field">
+                <label class="cr-field__label">
+                  <span>Motivo del mensaje</span>
+                  <select
+                    class="cr-field__input"
+                    name="motivo"
+                    required
+                  >
+                    <option value="">Selecciona una opción…</option>
+                    <option value="sugerencia">Sugerencia de mejora</option>
+                    <option value="nueva-carta">Propuesta de nueva carta</option>
+                    <option value="error-guia">He detectado un error en una guía o modelo</option>
+                    <option value="otra">Otra consulta</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="cr-field">
+                <label class="cr-field__label">
+                  <span>Mensaje</span>
+                  <textarea
+                    class="cr-field__input"
+                    name="mensaje"
+                    rows={6}
+                    required
+                  ></textarea>
+                </label>
+              </div>
+
+              <div class="cr-generator__actions">
+                <button type="submit" class="cr-button cr-button--primary">
+                  Enviar mensaje
+                </button>
+                <a href="/" class="cr-button cr-button--ghost">
+                  Volver al inicio
+                </a>
+              </div>
+
+              <p class="cr-generator__hint">
+                Al enviar este formulario, trataremos tus datos únicamente para gestionar tu mensaje,
+                de acuerdo con lo indicado en la
+                {' '}
+                <a href="/legal/privacidad">Política de privacidad</a>.
+              </p>
+            </form>
+          </div>
+        </section>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">Otras formas de contacto</h2>
+          <p>
+            Si lo prefieres, también puedes escribir directamente a:
+          </p>
+          <ul class="cr-pill-list">
+            <li>
+              Correo electrónico:{" "}
+              <a href="mailto:amariscalcantudo@gmail.com">
+                amariscalcantudo@gmail.com
+              </a>
+            </li>
+            <li>
+              Antes de escribir, puede que encuentres respuesta en las{" "}
+              <a href="/faq">Preguntas frecuentes</a>.
+            </li>
+            <li>
+              Para dudas sobre datos personales, revisa la{" "}
+              <a href="/legal/privacidad">Política de privacidad</a>.
+            </li>
+          </ul>
+        </section>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

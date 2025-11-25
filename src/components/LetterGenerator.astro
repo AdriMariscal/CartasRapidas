@@ -83,7 +83,9 @@ if (slug) {
 }
 
 // ¿Mostramos el selector de tipo de carta?
-const showSelect = showSelector && cartas.length > 1;
+// En el index queremos verlo SIEMPRE que showSelector sea true,
+// aunque solo haya una carta disponible.
+const showSelect = showSelector;
 ---
 
 {cartas.length === 0 ? (

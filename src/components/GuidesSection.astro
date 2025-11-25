@@ -24,10 +24,12 @@ const cartas = await getCollection('cartas', (entry) => entry.data.activo !== fa
 ---
 
 <section class="cr-container" id="guias">
+  <div class="cr-guides__intro">
   <h2>Guías y plantillas paso a paso</h2>
   <p>
     Elige el modelo que encaja con tu caso y revisa la descripción para saber cuándo utilizarla.
       </p>
+  </div>
 
   <div class="cr-guides__grid">
     {cartas.map((entry: CartaEntry) => {

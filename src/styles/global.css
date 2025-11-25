@@ -251,7 +251,7 @@ body {
 }
 
 .cr-field--select {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1.75rem;
 }
 
 .cr-field__label {
@@ -430,7 +430,29 @@ body {
    Grid de guías / plantillas
    ============================ */
 
+/* Intro de la sección de guías: misma columna estrecha que el texto inicial */
+.cr-guides__intro {
+  max-width: 100ch;
+  margin-inline: auto;
+  margin-bottom: 1.5rem;
+}
+
+.cr-guides__intro h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.cr-guides__intro p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--cr-text-muted);
+}
+
 .cr-guides__grid {
+  max-width: 100ch;           /* Nuevo: mismo ancho que el texto */
+  margin-inline: auto;        /* Nuevo: centrado */
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
