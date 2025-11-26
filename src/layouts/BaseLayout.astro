@@ -1,0 +1,98 @@
+---
+import NavBar from '../components/NavBar.astro';
+import '../styles/global.css';
+
+import HeaderDisplayAd from '../components/ads/HeaderDisplayAd.astro';
+import FooterMultiplexAd from '../components/ads/FooterMultiplexAd.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  pageTitle?: string;
+  pageDescription?: string;
+  pageType?: 'website' | 'article';
+  openGraphImage?: string;
+  structuredData?: any[];
+}
+
+const siteUrl = Astro.site?.href ?? 'https://cartasrapidas.es';
+const canonicalUrl = Astro.url?.href ?? siteUrl;
+const defaultOgImage = new URL('/og-default.png', siteUrl).href;
+
+const {
+  pageTitle = 'Cartas Rápidas – Reclamaciones y Bajas (ES)',
+  pageDescription = 'Genera cartas legales claras y listas para enviar.',
+  pageType = 'website',
+  openGraphImage,
+  structuredData = [],
+} = Astro.props;
+
+const metaImage = openGraphImage ?? defaultOgImage;
+
+const baseStructuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Cartas Rápidas',
+    url: siteUrl,
+    logo: new URL('/favicon.svg', siteUrl).href,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'Cartas Rápidas',
+    url: siteUrl,
+    inLanguage: 'es-ES',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${siteUrl}?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
+    },
+  },
+];
+
+const allStructuredData = [...baseStructuredData, ...structuredData];
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#111827" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    {/* Open Graph */}
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:type" content={pageType} />
+    <meta property="og:site_name" content="Cartas Rápidas" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={metaImage} />
+
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={metaImage} />
+
+    <script type="application/ld+json">
+      {JSON.stringify(allStructuredData)}
+    </script>
+  </head>
+  <body>
+    <NavBar />
+    <HeaderDisplayAd />
+
+    <main>
+      <slot />
+    </main>
+
+    <FooterMultiplexAd />
+    <SiteFooter />
+  </body>
+</html>

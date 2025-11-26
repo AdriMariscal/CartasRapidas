@@ -1,0 +1,37 @@
+---
+// Cabecera de publicidad superior.
+// Solo carga AdSense en producción usando import.meta.env.PROD
+// https://docs.astro.build/es/guides/environment-variables/
+const isProd = import.meta.env.PROD;
+---
+
+<section class="cr-ad cr-ad--header" aria-label="Publicidad">
+  <div class="cr-ad__inner">
+    <p class="cr-ad__label">PUBLICIDAD</p>
+
+{isProd && (
+  <>
+    <script
+      is:inline
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8169980958051856"
+      crossorigin="anonymous"
+    ></script>
+
+    {/* HeaderDisplay */}
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-8169980958051856"
+      data-ad-slot="6335861215"
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
+
+    <script is:inline>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </>
+)}
+  </div>
+</section>
