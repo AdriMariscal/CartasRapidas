@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pageTitle = 'Preguntas frecuentes – Cartas Rápidas';
+const pageDescription =
+  'Respuestas rápidas a las dudas más habituales sobre cómo funciona Cartas Rápidas, el generador de cartas y el tratamiento de datos.';
+const lastUpdated = 'noviembre de 2025';
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+  <div class="cr-main">
+    <article class="cr-guide-page">
+      <div class="cr-guide-content">
+        <header class="cr-guide-header">
+          <h1 class="cr-guide-title">Preguntas frecuentes</h1>
+          <p class="cr-guide-disclaimer">
+                        <strong>⚠️ Aviso legal</strong>
+            <span>
+              Información orientativa (última actualización: {lastUpdated}). Estas respuestas no sustituyen
+              el asesoramiento jurídico profesional ni constituyen una relación abogado-cliente.
+            </span>
+          </p>
+        </header>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">Uso general del sitio</h2>
+          <section class="cr-faq-section">
+            <div class="cr-faq-list">
+              <details class="cr-faq-item">
+                <summary>¿Qué es exactamente Cartas Rápidas?</summary>
+                <p>
+                  Cartas Rápidas es una herramienta online que te ayuda a redactar
+                  <strong>cartas formales orientativas</strong> (bajas, reclamaciones, comunicaciones, etc.)
+                  de forma rápida. No es un despacho de abogados ni un servicio de asesoría jurídica, sino
+                  una colección de plantillas y guías pensadas para que te sea más fácil poner por escrito
+                  tus comunicaciones.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Sustituye a un abogado o asesor jurídico?</summary>
+                <p>
+                  No. Las cartas que generas aquí son orientativas y están pensadas para casos frecuentes,
+                  pero <strong>no sustituyen el asesoramiento jurídico profesional</strong>. Si tu situación
+                  es compleja, implica importes elevados o quieres una estrategia legal específica, lo más
+                  prudente es consultar con un profesional.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Tiene algún coste usar el generador?</summary>
+                <p>
+                  El uso del generador es <strong>gratuito</strong>. El proyecto se financia principalmente
+                  mediante publicidad (por ejemplo, Google AdSense). En el futuro puede que existan
+                  funcionalidades o modelos premium opcionales, pero siempre se indicará de forma clara.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Enviáis vosotros la carta a la empresa o entidad?</summary>
+                <p>
+                  No. Cartas Rápidas <strong>no envía cartas en tu nombre</strong>. La herramienta genera el
+                  texto y el formato para que tú lo copies, imprimas o adjuntes en el canal que corresponda:
+                  correo certificado, burofax, registro electrónico, área de cliente, etc.
+                </p>
+              </details>
+            </div>
+          </section>
+        </section>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">Sobre las plantillas y su validez</h2>
+          <section class="cr-faq-section">
+            <div class="cr-faq-list">
+              <details class="cr-faq-item">
+                <summary>¿Las plantillas sirven para todos los gimnasios, compañías o situaciones?</summary>
+                <p>
+                  Las plantillas están pensadas para <strong>casos habituales</strong> (por ejemplo, la baja
+                  de un gimnasio con preaviso razonable, reclamaciones sencillas, etc.). Sin embargo, cada
+                  contrato puede incluir condiciones específicas (penalizaciones, plazos, formas de
+                  comunicación) que debes revisar siempre en tu documentación.
+                </p>
+                <p>
+                  Usa la carta como base, pero adapta el contenido cuando sea necesario y, si tienes dudas
+                  importantes, consulta con un profesional.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Garantiza la carta que acepten mi baja o estimen mi reclamación?</summary>
+                <p>
+                  No se puede garantizar el resultado. La carta te ayuda a dejar constancia escrita de tu
+                  voluntad y a explicar tu solicitud de forma ordenada, pero la decisión final depende de
+                  la normativa aplicable, del contrato y de cómo actúe la otra parte.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Puedo usar las cartas fuera de España?</summary>
+                <p>
+                  El enfoque principal de Cartas Rápidas es <strong>España</strong>, tanto por el idioma
+                  como por las referencias legales y tipos de trámites. Fuera de España, el tono y la
+                  estructura pueden servir de referencia, pero la normativa y los requisitos formales
+                  pueden ser diferentes.
+                </p>
+              </details>
+            </div>
+          </section>
+        </section>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">Datos personales y privacidad</h2>
+          <section class="cr-faq-section">
+            <div class="cr-faq-list">
+              <details class="cr-faq-item">
+                <summary>¿Qué pasa con los datos que escribo en el generador?</summary>
+                <p>
+                  El generador está diseñado para que el contenido de la carta se <strong>construya en tu
+                  propio navegador</strong>. No enviamos automáticamente esos datos a nuestros servidores
+                  ni los usamos para crear un perfil tuyo.
+                </p>
+                <p>
+                  Cuando cierras la pestaña o recargas la página, el contenido se pierde salvo que tú lo
+                  hayas copiado, descargado o guardado por tu cuenta.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Guardáis mi carta, mi nombre o mis direcciones en alguna base de datos?</summary>
+                <p>
+                  No almacenamos de forma sistemática el contenido de las cartas ni los datos que introduces
+                  en el generador. Solo trataremos los datos personales que nos envíes de forma
+                  voluntaria (por ejemplo, si nos escribes un correo) o los derivados del uso técnico de la
+                  web (logs, cookies, etc.), en los términos explicados en la
+                  {' '}
+                  <a href="/legal/privacidad">Política de privacidad</a>.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Por qué veo anuncios? ¿Se usan cookies?</summary>
+                <p>
+                  Para poder mantener el proyecto, este sitio puede mostrar anuncios mediante
+                  <strong>Google AdSense</strong>. Google y sus partners pueden utilizar cookies u otros
+                  identificadores para personalizar y medir la publicidad, siempre de acuerdo con tu
+                  configuración de consentimiento.
+                </p>
+                <p>
+                  Puedes ver los detalles en la{' '}
+                  <a href="/legal/cookies">Política de cookies</a> y en la{' '}
+                  <a href="/legal/privacidad">Política de privacidad</a>.
+                </p>
+              </details>
+            </div>
+          </section>
+        </section>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">Errores, sugerencias y contacto</h2>
+          <section class="cr-faq-section">
+            <div class="cr-faq-list">
+              <details class="cr-faq-item">
+                <summary>He detectado un error en una carta o guía, ¿qué hago?</summary>
+                <p>
+                  Los modelos se revisan periódicamente, pero es posible que en algún momento haya
+                  errores, desactualizaciones o casos límite que no estén bien cubiertos. Si ves algo que
+                  no encaja, te agradeceré mucho que lo señales escribiendo a
+                  {' '}
+                  <a href="mailto:amariscalcantudo@gmail.com">amariscalcantudo@gmail.com</a>.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Puedo proponer nuevos modelos de cartas?</summary>
+                <p>
+                  Sí. Cartas Rápidas está pensado para crecer poco a poco con nuevas plantillas útiles.
+                  Si hay un tipo de carta que usas a menudo o que crees que ayudaría a más gente, puedes
+                  sugerirla por correo. No puedo prometer plazos, pero todas las ideas se revisan.
+                </p>
+              </details>
+
+              <details class="cr-faq-item">
+                <summary>¿Cómo contacto si tengo otra duda?</summary>
+                <p>
+                  Puedes escribir en cualquier momento a
+                  {' '}
+                  <a href="mailto:amariscalcantudo@gmail.com">amariscalcantudo@gmail.com</a>.
+                  Ten en cuenta que no puedo ofrecer asesoramiento jurídico individualizado, pero sí
+                  resolver dudas sobre el funcionamiento de la web y el generador.
+                </p>
+              </details>
+            </div>
+          </section>
+        </section>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

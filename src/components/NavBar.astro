@@ -1,0 +1,203 @@
+---
+/**
+ * Cabecera superior de Cartas Rápidas.
+ * Incluye un pequeño script de navegación (scroll + link activo).
+ */
+---
+<header class="cr-header">
+  <div class="cr-container cr-header__inner">
+    <a href="/" class="cr-brand">
+      <span class="cr-brand__icon" aria-hidden="true">⚡</span>
+      <span class="cr-brand__text">
+        <span class="cr-brand__title">Cartas Rápidas</span>
+        <span class="cr-brand__subtitle">Genera cartas legales en segundos</span>
+      </span>
+    </a>
+
+    <nav class="cr-nav" aria-label="Navegación principal">
+      <ul class="cr-nav__list">
+        <li class="cr-nav__item">
+          <a
+            href="#inicio"
+            class="cr-nav__link cr-nav__link--active"
+            data-section="inicio"
+          >
+            Inicio
+          </a>
+        </li>
+        <li class="cr-nav__item">
+          <a
+            href="#generador"
+            class="cr-nav__link"
+            data-section="generador"
+          >
+            Generador
+          </a>
+        </li>
+        <li class="cr-nav__item">
+          <a
+            href="#guias"
+            class="cr-nav__link"
+            data-section="guias"
+          >
+            Guías
+          </a>
+        </li>
+        <li class="cr-nav__item">
+          <a
+            href="/faq"
+            class="cr-nav__link"
+          >
+            FAQ
+          </a>
+        </li>
+        <li class="cr-nav__item">
+          <a
+            href="/sobre"
+            class="cr-nav__link"
+          >
+            Sobre
+          </a>
+        </li>
+        <li class="cr-nav__item">
+          <a
+            href="/contacto"
+            class="cr-nav__link"
+          >
+            Contacto
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  (function () {
+    function initNav() {
+      const header = document.querySelector('.cr-header');
+      const links = Array.from(
+        document.querySelectorAll('.cr-nav__link[data-section]')
+      );
+      const allNavLinks = Array.from(
+        document.querySelectorAll('.cr-nav__link')
+      );
+      const path = window.location.pathname || '';
+
+      // Marcado activo para páginas "globales" (Sobre, FAQ, Contacto)
+      if (allNavLinks.length) {
+        const pageMatch = [
+          { prefix: '/sobre', href: '/sobre' },
+          { prefix: '/faq', href: '/faq' },
+          { prefix: '/contacto', href: '/contacto' },
+        ].find((entry) => path.startsWith(entry.prefix));
+
+        if (pageMatch) {
+        allNavLinks.forEach((link) => {
+            const href = link.getAttribute('href');
+            if (href === pageMatch.href) {
+              link.classList.add('cr-nav__link--active');
+            } else if (link.dataset.section) {
+              // Desactivamos Inicio/Generador/Guías en estas páginas
+            link.classList.remove('cr-nav__link--active');
+          }
+        });
+      }
+      }
+
+      if (!links.length) return;
+
+      // Mapeamos sección -> elemento DOM (solo las que existan en esta página)
+      const sections = links
+        .map((link) => {
+          const id = link.dataset.section;
+          if (!id) return null;
+          const el = document.getElementById(id);
+          if (!el) return null;
+          return { id, el };
+        })
+        .filter(Boolean);
+
+      function setActive(id) {
+        links.forEach((link) => {
+          if (link.dataset.section === id) {
+            link.classList.add('cr-nav__link--active');
+          } else {
+            link.classList.remove('cr-nav__link--active');
+          }
+        });
+      }
+
+      function scrollToSection(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+
+        const headerHeight = header ? header.offsetHeight : 0;
+        const rect = target.getBoundingClientRect();
+        const targetTop = rect.top + window.scrollY - headerHeight - 12; // pequeño margen
+
+        window.scrollTo({
+          top: targetTop < 0 ? 0 : targetTop,
+          behavior: 'smooth',
+        });
+      }
+
+      // Click en enlaces del nav (Inicio / Generador / Guías)
+      links.forEach((link) => {
+        link.addEventListener('click', (event) => {
+          const id = link.dataset.section;
+          if (!id) return;
+
+          const target = document.getElementById(id);
+
+          // Siempre gestionamos nosotros el click
+          event.preventDefault();
+
+          if (target) {
+            // La sección existe en esta página -> scroll interno
+          scrollToSection(id);
+          } else {
+            // La sección NO existe -> ir a la sección correspondiente del index
+            const url = new URL(window.location.href);
+            window.location.href = url.origin + '/#' + id;
+          }
+        });
+      });
+
+      // Actualización del enlace activo en función del scroll (solo si hay secciones reales)
+      function onScroll() {
+        if (!sections.length) return;
+
+        const headerHeight = header ? header.offsetHeight : 0;
+        const scrollPos = window.scrollY + headerHeight + 1;
+
+        let currentId = sections[0].id;
+
+        for (const { id, el } of sections) {
+          const offsetTop = el.getBoundingClientRect().top + window.scrollY;
+          if (scrollPos >= offsetTop) {
+            currentId = id;
+          } else {
+            break;
+          }
+        }
+
+        setActive(currentId);
+      }
+
+      if (sections.length) {
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+
+        // Estado inicial solo tiene sentido si hay secciones en la página
+      onScroll();
+    }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initNav);
+    } else {
+      initNav();
+    }
+  })();
+</script>

@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pageTitle = 'Página no encontrada – Cartas Rápidas';
+const pageDescription =
+  'La página que buscas no existe o ha cambiado de dirección. Vuelve al inicio o usa el generador de cartas.';
+---
+
+<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+  <div class="cr-main">
+    <article class="cr-guide-page">
+      <div class="cr-guide-content">
+        <header class="cr-guide-header">
+          <h1 class="cr-guide-title">Página no encontrada</h1>
+          <p class="cr-guide-disclaimer">
+            Código de error: 404 – La URL que has solicitado no está disponible.
+          </p>
+        </header>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">Puede haber pasado alguna de estas cosas</h2>
+          <ul class="cr-pill-list">
+            <li>Has escrito la dirección web con algún carácter de más o de menos.</li>
+            <li>La página ha cambiado de sitio o ha sido actualizada recientemente.</li>
+            <li>
+              El enlace desde el que has llegado es antiguo o ya no corresponde con el
+              contenido actual.
+            </li>
+          </ul>
+          <p>
+            Cartas Rápidas sigue funcionando con normalidad. Puedes volver al inicio, ir
+            directamente al generador o revisar las guías disponibles.
+          </p>
+        </section>
+
+        <section class="cr-section">
+          <h2 class="cr-section-title">¿Qué quieres hacer ahora?</h2>
+
+          <div class="cr-generator__actions">
+            <a href="/" class="cr-button cr-button--primary">
+              Volver al inicio
+            </a>
+            <a href="/#generador" class="cr-button cr-button--ghost">
+              Ir al generador
+            </a>
+            <a href="/#guias" class="cr-button cr-button--ghost">
+              Ver guías disponibles
+            </a>
+          </div>
+
+          <p class="cr-generator__hint">
+            Si crees que se trata de un error del sitio, puedes escribirnos a
+            {' '}
+            <a href="mailto:amariscalcantudo@gmail.com">amariscalcantudo@gmail.com</a>.
+          </p>
+        </section>
+      </div>
+    </article>
+  </div>
+</BaseLayout>

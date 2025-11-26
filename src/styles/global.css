@@ -1,1 +1,794 @@
-@import "tailwindcss";
+/* ============================
+   Base y variables globales
+   ============================ */
+
+:root {
+  --cr-max-width: 1120px;
+  --cr-header-bg: #ffffff;
+  --cr-header-border: #e5e7eb;
+  --cr-text-main: #111827;
+  --cr-text-muted: #6b7280;
+  --cr-accent: #f59e0b; /* amarillo del rayo */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--cr-text-main);
+  background-color: #f9fafb;
+}
+
+/* Contenedor genérico centrado */
+
+.cr-container {
+  max-width: var(--cr-max-width);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* ============================
+   Cabecera principal
+   ============================ */
+
+.cr-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background-color: var(--cr-header-bg);
+  border-bottom: 1px solid var(--cr-header-border);
+}
+
+.cr-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-block: 0.75rem;
+}
+
+/* Marca */
+
+.cr-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cr-brand__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.12);
+  color: var(--cr-accent);
+  font-size: 16px;
+}
+
+.cr-brand__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.cr-brand__title {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.cr-brand__subtitle {
+  font-size: 0.8rem;
+  color: var(--cr-text-muted);
+}
+
+/* Navegación */
+
+.cr-nav__list {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cr-nav__link {
+  font-size: 0.95rem;
+  text-decoration: none;
+  color: var(--cr-text-muted);
+}
+
+.cr-nav__link:hover {
+  color: var(--cr-text-main);
+}
+
+.cr-nav__link--active {
+  color: var(--cr-text-main);
+  font-weight: 500;
+}
+
+/* ============================
+   Bloques de publicidad
+   ============================ */
+
+.cr-ad {
+  background-color: #eef2f7; /* gris muy claro tipo original */
+}
+
+.cr-ad--header {
+  min-height: 110px;
+  margin: 2.5rem 0 1.25rem;
+  border: 1px solid var(--cr-header-border);
+  border-radius: 10px;
+}
+
+.cr-ad--footer {
+  min-height: 160px;
+  border-top: 1px solid var(--cr-header-border);
+  margin-top: 2rem;
+}
+
+.cr-ad__inner {
+  max-width: var(--cr-max-width);
+  margin-inline: auto;
+  padding: 1.5rem;
+  position: relative;
+}
+
+.cr-ad__label {
+  margin: 0 0 0.75rem;
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cr-text-muted);
+}
+
+/* ============================
+   Hero de portada
+   ============================ */
+
+.cr-hero {
+  padding-block: 3rem 2.5rem;
+  background-color: #f9fafb;
+}
+
+/* Columna de lectura ligeramente más estrecha */
+.cr-hero__content {
+  max-width: 100ch;
+}
+
+.cr-hero h1 {
+  margin: 0 0 1.75rem;
+  font-size: clamp(1.9rem, 1.7rem + 0.5vw, 2.4rem);
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+.cr-hero p {
+  margin: 0 0 1rem;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.cr-hero p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Subtítulos del hero ("Cómo usarlo", "Límites y responsabilidad") */
+
+.cr-hero__subtitle {
+  margin: 1.75rem 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Lista de pasos */
+
+.cr-hero__steps {
+  margin: 0 0 1.5rem 1.25rem;
+  padding: 0;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.cr-hero__steps li {
+  margin-bottom: 0.35rem;
+}
+
+.cr-hero__steps li:last-child {
+  margin-bottom: 0.75rem;
+}
+
+/* ============================
+   Generador de cartas
+   ============================ */
+
+.cr-generator {
+  padding-block: 2rem 3rem;
+}
+
+.cr-generator__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.2fr);
+  gap: 1.75rem;
+  align-items: stretch;
+}
+
+.cr-generator__form,
+.cr-generator__preview {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  padding: 1.5rem;
+}
+
+.cr-generator__form--no-select .cr-field--select {
+  display: none;
+}
+
+.cr-generator__preview {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Campos */
+
+.cr-field {
+  margin-bottom: 1rem;
+}
+
+.cr-field--select {
+  margin-bottom: 1.75rem;
+}
+
+.cr-field__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.88rem;
+  color: var(--cr-text-muted);
+}
+
+.cr-field__label span {
+  font-weight: 500;
+  color: var(--cr-text-main);
+}
+
+.cr-field__input,
+.cr-field--select select {
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease;
+}
+
+.cr-field__input:focus,
+.cr-field--select select:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3);
+}
+
+/* Contenedor de campos del formulario en 2 columnas */
+
+.cr-generator__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1rem;
+  row-gap: 0.75rem;
+}
+
+/* Ajustamos márgenes porque manda el gap de la grid (solo dentro de la rejilla de campos) */
+
+.cr-generator__fields .cr-field {
+  margin-bottom: 0;
+}
+
+/* Botones */
+
+.cr-generator__actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.cr-button {
+  border-radius: 999px;
+  border: 1px solid transparent;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.cr-button--primary {
+  background-color: #10b981;
+  color: #ffffff;
+}
+
+.cr-button--primary:hover {
+  background-color: #0ea271;
+}
+
+.cr-button--ghost {
+  background-color: #ffffff;
+  border-color: #d1d5db;
+  color: var(--cr-text-main);
+}
+
+.cr-button--ghost:hover {
+  background-color: #f3f4f6;
+}
+
+/* Info & disclaimer */
+
+.cr-generator__hint {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 0.8rem;
+  color: var(--cr-text-muted);
+}
+
+.cr-generator__warning {
+  margin-top: 0.5rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  background-color: #fef3c7;
+  border: 1px solid #facc15;
+  font-size: 0.8rem;
+}
+
+/* Previsualización */
+
+.cr-generator__preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.cr-generator__preview-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cr-generator__preview-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.cr-generator__preview-body {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  background-color: #f9fafb;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  flex: 1;
+  min-height: 260px;
+  overflow: auto;
+}
+
+/* Controles de paginación de la previsualización */
+
+.cr-generator__preview-pagination {
+  margin-top: 0.75rem;         /* aire respecto al recuadro de texto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;                 /* espacio entre botones y texto */
+}
+
+.cr-generator__preview-page-info {
+  font-size: 0.8rem;
+  color: var(--cr-text-muted);
+}
+
+/* Firma (canvas) */
+
+.cr-signature {
+  margin-top: 1rem;
+}
+
+.cr-signature__label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--cr-text-main);
+  margin-bottom: 0.35rem;
+}
+
+.cr-signature__canvas {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background-color: #ffffff;
+  touch-action: none;
+}
+
+.cr-signature__actions {
+  margin-top: 0.4rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.cr-preview-signature {
+  margin-top: 1.5rem;
+}
+
+.cr-preview-signature img {
+  max-width: 220px;
+  max-height: 80px;
+  display: block;
+}
+
+/* ============================
+   Grid de guías / plantillas
+   ============================ */
+
+/* Intro de la sección de guías: misma columna estrecha que el texto inicial */
+.cr-guides__intro {
+  max-width: 100ch;
+  margin-inline: auto;
+  margin-bottom: 1.5rem;
+}
+
+.cr-guides__intro h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.cr-guides__intro p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--cr-text-muted);
+}
+
+.cr-guides__grid {
+  max-width: 100ch;           /* Nuevo: mismo ancho que el texto */
+  margin-inline: auto;        /* Nuevo: centrado */
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.cr-guide-card {
+  display: block;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  padding: 1.25rem 1.35rem;
+  text-decoration: none;
+  color: var(--cr-text-main);
+  cursor: pointer;
+  transition:
+    box-shadow 0.12s ease,
+    transform 0.12s ease,
+    background-color 0.12s ease;
+}
+
+.cr-guide-card:hover {
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
+  transform: translateY(-2px);
+}
+
+.cr-guide-card:active {
+  transform: translateY(0);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08);
+  background-color: #f9fafb;
+}
+
+.cr-guide-card:focus-visible {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
+}
+
+.cr-guide-card__title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cr-guide-card__description {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--cr-text-muted);
+}
+
+/* ============================
+   Footer
+   ============================ */
+
+.cr-footer {
+  border-top: 1px solid var(--cr-header-border);
+  background-color: #ffffff;
+  padding-block: 1.25rem 1.5rem;
+}
+
+.cr-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--cr-text-muted);
+}
+
+.cr-footer__copy {
+  margin: 0;
+}
+
+.cr-footer__brand {
+  font-weight: 500;
+  color: var(--cr-text-main);
+}
+
+.cr-footer__nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.cr-footer__link {
+  text-decoration: none;
+  color: var(--cr-text-muted);
+}
+
+.cr-footer__link:hover {
+  color: var(--cr-text-main);
+}
+
+.cr-footer__separator {
+  color: #d1d5db;
+}
+
+/* ============================
+   Página de guía / carta (slug)
+   ============================ */
+
+/* Wrapper principal (solo páginas de carta) */
+.cr-main {
+  padding-block: 2.5rem 3rem;
+}
+
+.cr-guide-page {
+  max-width: var(--cr-max-width);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* Columna de contenido: misma filosofía que .cr-container.cr-hero__content */
+.cr-guide-content {
+  max-width: 100ch;
+  margin-inline: auto;
+}
+
+.cr-guide-header {
+  margin-bottom: 2.25rem;
+}
+
+.cr-guide-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.7rem, 1.6rem + 0.35vw, 2.1rem);
+  font-weight: 600;
+}
+
+.cr-guide-intro {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+.cr-guide-disclaimer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-top: 0.85rem;
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #7c2d12;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-left: 6px solid var(--cr-accent);
+  border-radius: 0.65rem;
+  box-shadow: 0 6px 14px rgba(17, 24, 39, 0.04);
+}
+
+.cr-guide-disclaimer strong {
+  display: inline-block;
+  min-width: 96px;
+  font-weight: 700;
+  color: #9a3412;
+}
+
+/* Secciones genéricas */
+
+.cr-section {
+  margin-top: 2.5rem;
+}
+
+.cr-section-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.cr-section-lead {
+  margin: 0 0 1.25rem;
+  font-size: 0.9rem;
+  color: var(--cr-text-muted);
+}
+
+/* Puntos clave */
+
+.cr-pill-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.cr-pill-list li + li {
+  margin-top: 0.25rem;
+}
+
+/* "Qué revisar" en cajitas */
+
+.cr-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+}
+
+.cr-card {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.cr-card h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.cr-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--cr-text-muted);
+}
+
+/* Pasos */
+
+.cr-steps {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+.cr-steps li + li {
+  margin-top: 0.35rem;
+}
+
+/* FAQ acordeones en cajitas */
+
+.cr-faq-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 2rem;
+}
+
+.cr-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.cr-faq-item {
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+  padding: 0.75rem 1rem;
+}
+
+.cr-faq-item summary {
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  list-style: none;
+}
+
+.cr-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.cr-faq-item summary::after {
+  content: "▼";
+  float: right;
+  font-size: 0.75rem;
+  transform: translateY(2px);
+}
+
+.cr-faq-item[open] summary::after {
+  content: "▲";
+}
+
+.cr-faq-item p {
+  margin: 0.6rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--cr-text-muted);
+}
+
+/* ============================
+   Responsive
+   ============================ */
+
+@media (max-width: 960px) {
+  .cr-generator__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cr-generator__fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .cr-header__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cr-nav__list {
+    gap: 1rem;
+  }
+
+  .cr-footer__inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cr-guide-page {
+    padding-inline: 1rem;
+  }
+
+  .cr-card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cr-guides__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
