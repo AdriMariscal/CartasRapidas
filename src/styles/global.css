@@ -130,8 +130,10 @@ body {
 }
 
 .cr-ad--header {
-  min-height: 140px;
-  border-bottom: 1px solid var(--cr-header-border);
+  min-height: 110px;
+  margin: 2.5rem 0 1.25rem;
+  border: 1px solid var(--cr-header-border);
+  border-radius: 10px;
 }
 
 .cr-ad--footer {
