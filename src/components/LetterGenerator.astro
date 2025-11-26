@@ -104,9 +104,9 @@ const showSelect = showSelector;
         <div class={`cr-generator__form ${showSelect ? '' : 'cr-generator__form--no-select'}`}>
           {/* Selector de tipo de carta (se puede ocultar por CSS cuando showSelect = false) */}
           <div class="cr-field cr-field--select">
-            <label class="cr-field__label">
+            <label class="cr-field__label" for="cr-template-select">
               <span>Tipo de carta</span>
-              <select data-cr-template>
+              <select id="cr-template-select" data-cr-template>
                 {/* Las opciones se rellenan por JS para mantener una sola fuente de verdad */}
               </select>
             </label>
@@ -123,12 +123,14 @@ const showSelect = showSelector;
               class="cr-signature__canvas"
               width="400"
               height="160"
+              aria-label="Área para dibujar la firma"
             ></canvas>
             <div class="cr-signature__actions">
               <button
                 type="button"
                 class="cr-button cr-button--ghost"
                 data-cr-signature-clear
+                aria-label="Borrar la firma dibujada"
               >
                 Limpiar firma
               </button>
@@ -136,10 +138,18 @@ const showSelect = showSelector;
           </div>
 
           <div class="cr-generator__actions">
-            <button class="cr-button cr-button--primary" data-cr-generate>
+            <button
+              class="cr-button cr-button--primary"
+              data-cr-generate
+              aria-label="Generar la carta con los datos introducidos"
+            >
               Generar
             </button>
-            <button class="cr-button cr-button--ghost" data-cr-reset>
+            <button
+              class="cr-button cr-button--ghost"
+              data-cr-reset
+              aria-label="Limpiar todos los campos del formulario"
+            >
               Limpiar
             </button>
           </div>
@@ -159,10 +169,18 @@ const showSelect = showSelector;
           <div class="cr-generator__preview-header">
             <h2 class="cr-generator__preview-title">Previsualización</h2>
             <div class="cr-generator__preview-actions">
-              <button class="cr-button cr-button--ghost" data-cr-copy>
+              <button
+                class="cr-button cr-button--ghost"
+                data-cr-copy
+                aria-label="Copiar la carta generada al portapapeles"
+              >
                 Copiar
               </button>
-              <button class="cr-button cr-button--primary" data-cr-pdf>
+              <button
+                class="cr-button cr-button--primary"
+                data-cr-pdf
+                aria-label="Descargar la carta generada en PDF"
+              >
                 Descargar PDF
               </button>
             </div>
@@ -508,10 +526,18 @@ const showSelect = showSelector;
             const fieldWrapper = document.createElement('div');
             fieldWrapper.className = 'cr-field';
 
+            const inputId = `cr-field-${field.name}`;
+
             fieldWrapper.innerHTML = `
-              <label class="cr-field__label">
+              <label class="cr-field__label" for="${inputId}">
                 <span>${field.label}</span>
-                <input class="cr-field__input" name="${field.name}" autocomplete="off" />
+                <input
+                  class="cr-field__input"
+                  id="${inputId}"
+                  name="${field.name}"
+                  autocomplete="off"
+                  aria-label="${field.label}"
+                />
               </label>
             `;
 
