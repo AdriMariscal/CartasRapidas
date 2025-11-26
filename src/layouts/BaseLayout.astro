@@ -29,6 +29,12 @@ const {
 
 const metaImage = openGraphImage ?? defaultOgImage;
 
+const alternateLanguages = [
+  { hreflang: 'es', href: canonicalUrl },
+  { hreflang: 'es-ES', href: canonicalUrl },
+  { hreflang: 'x-default', href: canonicalUrl },
+];
+
 const baseStructuredData = [
   {
     '@context': 'https://schema.org',
@@ -65,6 +71,11 @@ const allStructuredData = [...baseStructuredData, ...structuredData];
     <meta name="theme-color" content="#111827" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta http-equiv="content-language" content="es" />
+
+    {alternateLanguages.map(({ hreflang, href }) => (
+      <link rel="alternate" hreflang={hreflang} href={href} />
+    ))}
 
     {/* Open Graph */}
     <meta property="og:locale" content="es_ES" />
