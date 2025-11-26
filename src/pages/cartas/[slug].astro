@@ -68,7 +68,10 @@ const { data } = carta;
 // Título y descripción para la etiqueta <title> y <meta>
 const pageTitle = `${data.titulo} - Guía completa y modelo`;
 const pageDescription = data.descripcion as string | undefined;
-const canonicalUrl = Astro.url?.href ?? 'https://cartasrapidas.es';
+const canonicalUrl = Astro.url?.href ?? "https://cartasrapidas.es";
+const siteUrl = Astro.site?.href ?? "https://cartasrapidas.es";
+const guidesUrl = new URL("/#guias", siteUrl).href;
+const defaultOgImage = new URL("/og-default.png", siteUrl).href;
 
 // Campos básicos del frontmatter
 const intro = data.intro as string | undefined;
@@ -145,45 +148,88 @@ if (Array.isArray(rawFaqs)) {
   }));
 }
  
-const structuredData = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: data.titulo,
-    description: pageDescription ?? intro ?? 'Guía práctica y plantilla de carta.',
-    inLanguage: 'es-ES',
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': canonicalUrl,
+const structuredData = (() => {
+  const howToSteps = pasos?.map((paso, index) => ({
+    '@type': 'HowToStep',
+    position: index + 1,
+    name: paso,
+    text: paso,
+  }));
+
+  const items: any[] = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: data.titulo,
+      description: pageDescription ?? intro ?? 'Guía práctica y plantilla de carta.',
+      inLanguage: 'es-ES',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': canonicalUrl,
+      },
+      about: puntosClave?.filter(Boolean) ?? [],
+      url: canonicalUrl,
+      author: {
+        '@type': 'Organization',
+        name: 'Cartas Rápidas',
+        url: siteUrl,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'Cartas Rápidas',
+        url: siteUrl,
+        logo: {
+          '@type': 'ImageObject',
+          url: new URL('/favicon.svg', siteUrl).href,
+        },
+      },
+      image: defaultOgImage,
     },
-    about: puntosClave?.filter(Boolean) ?? [],
-    url: canonicalUrl,
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-      {
-        '@type': 'ListItem',
-        position: 1,
-        name: 'Inicio',
-        item: 'https://cartasrapidas.es/',
-      },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: 'Plantillas y guías',
-        item: 'https://cartasrapidas.es/#guias',
-      },
-      {
-        '@type': 'ListItem',
-        position: 3,
-        name: data.titulo,
-        item: canonicalUrl,
-      },
-    ],
-  },
-];
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Inicio',
+          item: siteUrl,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Plantillas y guías',
+          item: guidesUrl,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: data.titulo,
+          item: canonicalUrl,
+        },
+      ],
+    },
+  ];
+
+  if (howToSteps && howToSteps.length > 0) {
+    items.push({
+      '@context': 'https://schema.org',
+      '@type': 'HowTo',
+      name: data.titulo,
+      description: pageDescription ?? intro ?? 'Pasos para completar tu carta.',
+      inLanguage: 'es-ES',
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': canonicalUrl,
+        },
+      step: howToSteps,
+      totalTime: undefined,
+      url: canonicalUrl,
+    });
+  }
+
+  return items;
+})();
 
 ---
 
