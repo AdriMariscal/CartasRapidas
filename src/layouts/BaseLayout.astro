@@ -12,10 +12,11 @@ interface Props {
   pageType?: 'website' | 'article';
   openGraphImage?: string;
   structuredData?: any[];
+  canonicalUrl?: string;
 }
 
 const siteUrl = Astro.site?.href ?? 'https://cartasrapidas.es';
-const canonicalUrl = Astro.url?.href ?? siteUrl;
+const canonicalUrl = Astro.props.canonicalUrl ?? Astro.url?.href ?? siteUrl;
 const defaultOgImage = new URL('/og-default.png', siteUrl).href;
 
 const {
@@ -27,6 +28,12 @@ const {
 } = Astro.props;
 
 const metaImage = openGraphImage ?? defaultOgImage;
+
+const alternateLanguages = [
+  { hreflang: 'es', href: canonicalUrl },
+  { hreflang: 'es-ES', href: canonicalUrl },
+  { hreflang: 'x-default', href: canonicalUrl },
+];
 
 const baseStructuredData = [
   {
@@ -64,6 +71,11 @@ const allStructuredData = [...baseStructuredData, ...structuredData];
     <meta name="theme-color" content="#111827" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta http-equiv="content-language" content="es" />
+
+    {alternateLanguages.map(({ hreflang, href }) => (
+      <link rel="alternate" hreflang={hreflang} href={href} />
+    ))}
 
     {/* Open Graph */}
     <meta property="og:locale" content="es_ES" />

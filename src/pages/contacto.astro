@@ -14,8 +14,11 @@ const lastUpdated = 'noviembre de 2025';
         <header class="cr-guide-header">
           <h1 class="cr-guide-title">Contacto</h1>
           <p class="cr-guide-disclaimer">
-            Última actualización: {lastUpdated}. Utiliza este formulario para enviar sugerencias,
-            informar de errores o proponer nuevas cartas para Cartas Rápidas.
+            <strong>⚠️ Aviso legal</strong>
+            <span>
+              Última actualización: {lastUpdated}. Utiliza este formulario para enviar sugerencias o informar de errores;
+              no prestamos asesoramiento jurídico personalizado a través de este canal.
+            </span>
           </p>
         </header>
 
@@ -38,18 +41,19 @@ const lastUpdated = 'noviembre de 2025';
 
               <!-- Honeypot oculto para bots -->
               <p style="display:none;">
-                <label>
+                <label for="contacto-bot-field">
                   No rellenes este campo:
-                  <input name="bot-field" />
+                  <input id="contacto-bot-field" name="bot-field" />
                 </label>
               </p>
 
               <div class="cr-generator__fields">
                 <div class="cr-field">
-                  <label class="cr-field__label">
+                  <label class="cr-field__label" for="contacto-nombre">
                     <span>Nombre (opcional)</span>
                     <input
                       class="cr-field__input"
+                      id="contacto-nombre"
                       type="text"
                       name="nombre"
                       autocomplete="name"
@@ -57,11 +61,13 @@ const lastUpdated = 'noviembre de 2025';
                   </label>
                 </div>
 
+                {/* Campo correo corregido: mismo patrón que el nombre */}
                 <div class="cr-field">
-                  <label class="cr-field__label">
+                <label class="cr-field__label" for="contacto-email">
                     <span>Correo electrónico</span>
                     <input
                       class="cr-field__input"
+                      id="contacto-email"
                       type="email"
                       name="email"
                       autocomplete="email"
@@ -72,10 +78,11 @@ const lastUpdated = 'noviembre de 2025';
               </div>
 
               <div class="cr-field">
-                <label class="cr-field__label">
+                <label class="cr-field__label" for="contacto-motivo">
                   <span>Motivo del mensaje</span>
                   <select
                     class="cr-field__input"
+                    id="contacto-motivo"
                     name="motivo"
                     required
                   >
@@ -89,10 +96,11 @@ const lastUpdated = 'noviembre de 2025';
               </div>
 
               <div class="cr-field">
-                <label class="cr-field__label">
+                <label class="cr-field__label" for="contacto-mensaje">
                   <span>Mensaje</span>
                   <textarea
                     class="cr-field__input"
+                    id="contacto-mensaje"
                     name="mensaje"
                     rows={6}
                     required
@@ -126,17 +134,17 @@ const lastUpdated = 'noviembre de 2025';
           </p>
           <ul class="cr-pill-list">
             <li>
-              Correo electrónico:{" "}
+              Correo electrónico:{' '}
               <a href="mailto:amariscalcantudo@gmail.com">
                 amariscalcantudo@gmail.com
               </a>
             </li>
             <li>
-              Antes de escribir, puede que encuentres respuesta en las{" "}
+              Antes de escribir, puede que encuentres respuesta en las{' '}
               <a href="/faq">Preguntas frecuentes</a>.
             </li>
             <li>
-              Para dudas sobre datos personales, revisa la{" "}
+              Para dudas sobre datos personales, revisa la{' '}
               <a href="/legal/privacidad">Política de privacidad</a>.
             </li>
           </ul>
