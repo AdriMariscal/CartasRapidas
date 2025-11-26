@@ -5,9 +5,23 @@ import GuidesSection from '../components/GuidesSection.astro';
 
 const pageTitle = 'Cartas Rápidas – Reclamaciones y Bajas (ES)';
 const pageDescription = 'Genera cartas legales claras y listas para enviar.';
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: pageTitle,
+    description: pageDescription,
+    inLanguage: 'es-ES',
+    url: Astro.url?.href ?? 'https://cartasrapidas.es',
+  },
+];
 ---
 
-<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+<BaseLayout
+  pageTitle={pageTitle}
+  pageDescription={pageDescription}
+  structuredData={structuredData}
+>
   <section
     class="cr-hero"
     id="inicio"

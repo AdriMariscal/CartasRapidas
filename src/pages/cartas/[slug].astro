@@ -68,6 +68,7 @@ const { data } = carta;
 // Título y descripción para la etiqueta <title> y <meta>
 const pageTitle = `${data.titulo} - Guía completa y modelo`;
 const pageDescription = data.descripcion as string | undefined;
+const canonicalUrl = Astro.url?.href ?? 'https://cartasrapidas.es';
 
 // Campos básicos del frontmatter
 const intro = data.intro as string | undefined;
@@ -143,9 +144,55 @@ if (Array.isArray(rawFaqs)) {
     respuesta: String(item?.respuesta ?? ""),
   }));
 }
+ 
+const structuredData = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: data.titulo,
+    description: pageDescription ?? intro ?? 'Guía práctica y plantilla de carta.',
+    inLanguage: 'es-ES',
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+    },
+    about: puntosClave?.filter(Boolean) ?? [],
+    url: canonicalUrl,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Inicio',
+        item: 'https://cartasrapidas.es/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: 'Plantillas y guías',
+        item: 'https://cartasrapidas.es/#guias',
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: data.titulo,
+        item: canonicalUrl,
+      },
+    ],
+  },
+];
+
 ---
 
-<BaseLayout pageTitle={pageTitle} pageDescription={pageDescription}>
+<BaseLayout
+  pageTitle={pageTitle}
+  pageDescription={pageDescription}
+  pageType="article"
+  structuredData={structuredData}
+>
   <main class="cr-main">
     <article class="cr-guide-page">
       {/* Bloque de contenido principal (columna más estrecha, como el hero) */}
