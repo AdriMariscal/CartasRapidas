@@ -168,6 +168,33 @@ const showSelect = showSelector;
             </div>
           </div>
           <pre class="cr-generator__preview-body" data-cr-preview></pre>
+          {/* Controles de paginación de la previsualización */}
+          <div
+            class="cr-generator__preview-pagination"
+            data-cr-pagination
+            hidden
+          >
+            <button
+              class="cr-button cr-button--ghost"
+              type="button"
+              data-cr-page-prev
+            >
+              Anterior
+            </button>
+            <span
+              class="cr-generator__preview-page-info"
+              data-cr-page-info
+            >
+              Página 1 de 1
+            </span>
+            <button
+              class="cr-button cr-button--ghost"
+              type="button"
+              data-cr-page-next
+            >
+              Siguiente
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -198,12 +225,21 @@ const showSelect = showSelector;
         const signatureCanvas = signatureSection?.querySelector('canvas');
         const signatureClearBtn = signatureSection?.querySelector('[data-cr-signature-clear]');
 
+        const paginationEl = root.querySelector('[data-cr-pagination]');
+        const pageInfoEl = root.querySelector('[data-cr-page-info]');
+        const prevPageBtn = root.querySelector('[data-cr-page-prev]');
+        const nextPageBtn = root.querySelector('[data-cr-page-next]');
+
         const cartasById = new Map(allCartas.map((carta) => [carta.id, carta]));
         /** @type {CartaDef} */
         let currentCarta = cartasById.get(defaultCartaId) || allCartas[0];
 
         /** @type {Record<string, string>} */
         let formState = {};
+
+        /** @type {string[]} */
+        let previewPages = [];
+        let currentPageIndex = 0;
 
         // --- Firma (canvas) ---
         /** @type {CanvasRenderingContext2D | null} */
@@ -336,10 +372,20 @@ const showSelect = showSelector;
           return text;
         }
 
-        // Versión HTML (para la previsualización con imagen)
-        function buildPreviewHtml() {
+        // Texto "crudo" para la previsualización (usa plantilla si aún no hay datos)
+        function getRawPreviewText() {
+          if (!currentCarta) return '';
           let text = buildBaseText();
-          if (!text) return '';
+          if (!text) {
+            text = currentCarta.body || '';
+          }
+          return text;
+          }
+
+        // HTML de una página concreta a partir de su texto crudo
+        function buildPreviewPageHtml(rawTextForPage) {
+          if (!rawTextForPage) return '';
+          let text = rawTextForPage;
 
           // Token que no contiene ni * ni _ para que el parser de Markdown NO lo toque
           const FIRMA_TOKEN = 'CRFIRMATOKENPLACEHOLDER';
@@ -367,10 +413,59 @@ const showSelect = showSelector;
           return text;
         }
 
+        // Divide el texto en páginas (por número de líneas)
+        function buildPreviewPages() {
+          const raw = getRawPreviewText();
+          if (!raw) return [];
+          const lines = raw.split('\n');
+          const LINES_PER_PAGE = 20; // ajuste aproximado para que la altura se parezca al formulario
+
+          /** @type {string[]} */
+          const pages = [];
+          for (let i = 0; i < lines.length; i += LINES_PER_PAGE) {
+            const pageLines = lines.slice(i, i + LINES_PER_PAGE);
+            const pageRawText = pageLines.join('\n');
+            pages.push(buildPreviewPageHtml(pageRawText));
+          }
+          return pages;
+        }
+
+        function updatePaginationControls() {
+          if (!paginationEl || !pageInfoEl || !prevPageBtn || !nextPageBtn) return;
+
+          const total = previewPages.length;
+
+          if (!total || total <= 1) {
+            paginationEl.hidden = true;
+            return;
+          }
+
+          paginationEl.hidden = false;
+          pageInfoEl.textContent = `Página ${currentPageIndex + 1} de ${total}`;
+          prevPageBtn.disabled = currentPageIndex === 0;
+          nextPageBtn.disabled = currentPageIndex === total - 1;
+        }
+
         function updatePreview() {
           if (!previewEl) return;
-          const html = buildPreviewHtml();
-          previewEl.innerHTML = html;
+
+          previewPages = buildPreviewPages();
+
+          if (!previewPages.length) {
+            previewEl.innerHTML = '';
+            updatePaginationControls();
+            return;
+          }
+
+          if (currentPageIndex >= previewPages.length) {
+            currentPageIndex = previewPages.length - 1;
+          }
+          if (currentPageIndex < 0) {
+            currentPageIndex = 0;
+          }
+
+          previewEl.innerHTML = previewPages[currentPageIndex];
+          updatePaginationControls();
         }
 
         // --- Campos y select ---
@@ -397,6 +492,7 @@ const showSelect = showSelector;
             currentCarta = selected;
             renderFields();
             updateSignatureVisibility();
+            currentPageIndex = 0;
             updatePreview();
           });
         }
@@ -436,6 +532,7 @@ const showSelect = showSelector;
         function handleReset() {
           renderFields();
           clearSignatureCanvas();
+          currentPageIndex = 0;
           updatePreview();
         }
 
@@ -512,6 +609,22 @@ const showSelect = showSelector;
         signatureClearBtn?.addEventListener('click', (evt) => {
           evt.preventDefault();
           clearSignatureCanvas();
+        });
+
+        prevPageBtn?.addEventListener('click', (evt) => {
+          evt.preventDefault();
+          if (currentPageIndex > 0) {
+            currentPageIndex -= 1;
+            updatePreview();
+          }
+        });
+
+        nextPageBtn?.addEventListener('click', (evt) => {
+          evt.preventDefault();
+          if (currentPageIndex < previewPages.length - 1) {
+            currentPageIndex += 1;
+            updatePreview();
+          }
         });
 
         // Inicialización

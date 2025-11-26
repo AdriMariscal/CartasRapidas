@@ -294,9 +294,9 @@ body {
   row-gap: 0.75rem;
 }
 
-/* Ajustamos márgenes porque manda el gap de la grid */
+/* Ajustamos márgenes porque manda el gap de la grid (solo dentro de la rejilla de campos) */
 
-.cr-field {
+.cr-generator__fields .cr-field {
   margin-bottom: 0;
 }
 
@@ -385,6 +385,21 @@ body {
   flex: 1;
   min-height: 260px;
   overflow: auto;
+}
+
+/* Controles de paginación de la previsualización */
+
+.cr-generator__preview-pagination {
+  margin-top: 0.75rem;         /* aire respecto al recuadro de texto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;                 /* espacio entre botones y texto */
+}
+
+.cr-generator__preview-page-info {
+  font-size: 0.8rem;
+  color: var(--cr-text-muted);
 }
 
 /* Firma (canvas) */
