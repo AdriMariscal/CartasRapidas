@@ -12,10 +12,11 @@ interface Props {
   pageType?: 'website' | 'article';
   openGraphImage?: string;
   structuredData?: any[];
+  canonicalUrl?: string;
 }
 
 const siteUrl = Astro.site?.href ?? 'https://cartasrapidas.es';
-const canonicalUrl = Astro.url?.href ?? siteUrl;
+const canonicalUrl = Astro.props.canonicalUrl ?? Astro.url?.href ?? siteUrl;
 const defaultOgImage = new URL('/og-default.png', siteUrl).href;
 
 const {
